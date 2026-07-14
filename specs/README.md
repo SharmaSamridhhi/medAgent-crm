@@ -61,7 +61,7 @@ The five required tools (two mandatory: Log Interaction, Edit Interaction).
 | [MEDGENT-012](MEDGENT-012-tool-retrieve-hcp-history.md) | Tool: Retrieve HCP History | MVP | Done | MEDGENT-006, MEDGENT-007, MEDGENT-009 | `MEDGENT-012-tool-retrieve-hcp-history` |
 | [MEDGENT-013](MEDGENT-013-tool-schedule-follow-up.md) | Tool: Schedule Follow-up | MVP | Done | MEDGENT-007, MEDGENT-009 | `MEDGENT-013-tool-schedule-follow-up` |
 | [MEDGENT-014](MEDGENT-014-tool-compliance-flag.md) | Tool: Compliance Flag | MVP | Done | MEDGENT-009, MEDGENT-010 | `MEDGENT-014-tool-compliance-flag` |
-| [MEDGENT-015](MEDGENT-015-agent-orchestration-endpoint.md) | Agent orchestration & conversational endpoint | MVP | To Do | MEDGENT-010..014 | `MEDGENT-015-agent-orchestration-endpoint` |
+| [MEDGENT-015](MEDGENT-015-agent-orchestration-endpoint.md) | Agent orchestration & conversational endpoint | MVP | Done | MEDGENT-010..014 | `MEDGENT-015-agent-orchestration-endpoint` |
 
 ## EPIC-04: Frontend Core
 
