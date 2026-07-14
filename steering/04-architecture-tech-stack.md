@@ -12,7 +12,7 @@ etc.) without raising it with the user first.
 | Frontend font    | Google Inter                                                    |
 | Backend          | Python + FastAPI                                                |
 | AI agent runtime | LangGraph                                                       |
-| LLM provider     | Groq — `gemma2-9b-it` (default/fast), `llama-3.3-70b-versatile` (heavier extraction/summarization, config-selectable) |
+| LLM provider     | Groq — `llama-3.1-8b-instant` (default/fast), `llama-3.3-70b-versatile` (heavier extraction/summarization, config-selectable) |
 | Database         | PostgreSQL (SQLAlchemy 2.0 + Alembic migrations)                |
 | Containerization | Docker + Docker Compose (monorepo, single compose file at root)|
 
@@ -56,10 +56,14 @@ tokens, JWTs, or a login flow unless the user asks for a new spec.
   hardcoded.
 - Model name is also environment/config-driven (`GROQ_MODEL_DEFAULT`,
   `GROQ_MODEL_HEAVY`) so swapping models doesn't require a code change.
-- `gemma2-9b-it` is the default for latency-sensitive conversational turns;
-  `llama-3.3-70b-versatile` is reserved for steps that need stronger
-  reasoning (e.g. structured entity extraction from a long free-form note,
-  compliance flagging) and is invoked explicitly by the tool that needs it.
+- `llama-3.1-8b-instant` is the default for latency-sensitive conversational
+  turns. The assignment brief specified `gemma2-9b-it`, but Groq
+  decommissioned that model in Oct 2025 (before this build); this is
+  Groq's own recommended direct replacement — same speed tier, better
+  price-performance. `llama-3.3-70b-versatile` is reserved for steps that
+  need stronger reasoning (e.g. structured entity extraction from a long
+  free-form note, compliance flagging) and is invoked explicitly by the
+  tool that needs it.
 
 ## LangGraph agent contract
 
