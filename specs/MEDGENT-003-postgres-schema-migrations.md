@@ -1,6 +1,6 @@
 # MEDGENT-003: Postgres schema & migrations setup
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-01: Foundation & Infrastructure](epics/EPIC-01-foundation.md)
 **Branch:** `MEDGENT-003-postgres-schema-migrations`
@@ -25,21 +25,21 @@ that's MEDGENT-006/007.
 
 ## Acceptance criteria
 
-- [ ] `backend/app/core/db.py` provides a SQLAlchemy 2.0 engine/session
+- [x] `backend/app/core/db.py` provides a SQLAlchemy 2.0 engine/session
       factory reading `DATABASE_URL` from env.
-- [ ] `backend/alembic/` initialized and wired to the app's `DATABASE_URL`
+- [x] `backend/alembic/` initialized and wired to the app's `DATABASE_URL`
       and SQLAlchemy metadata (`alembic revision --autogenerate` works).
-- [ ] Baseline migration creates: `reps` (id, name, email, created_at),
+- [x] Baseline migration creates: `reps` (id, name, email, created_at),
       `hcps` (id, name, specialty, institution, contact_info, created_at),
       `interactions` (id, hcp_id FK, rep_id FK, occurred_at, channel,
       notes, created_at, updated_at) — columns are a floor, not a ceiling;
       MEDGENT-006/007 may extend via new migrations.
-- [ ] `docker compose up` runs the migration automatically on backend
+- [x] `docker compose up` runs the migration automatically on backend
       startup (or via a documented one-off command) before the app accepts
       traffic.
-- [ ] A basic model/session smoke test confirms the app can connect and
+- [x] A basic model/session smoke test confirms the app can connect and
       query an empty table.
-- [ ] `README.md` documents how to generate and apply a new migration.
+- [x] `README.md` documents how to generate and apply a new migration.
 
 ## Technical details
 
