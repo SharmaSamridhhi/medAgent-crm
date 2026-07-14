@@ -6,12 +6,10 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.agent.llm import get_heavy_llm
+from app.agent.tools._extraction import extract_structured
 from app.api.v1.interactions import create_interaction
 from app.models import HCP, Rep
-from app.schemas.interaction import InteractionCreate
-
-Sentiment = Literal["positive", "neutral", "negative"]
+from app.schemas.interaction import InteractionCreate, Sentiment
 
 _EXTRACTION_PROMPT = (
     "You are helping a pharmaceutical sales rep log a call or meeting with "
@@ -86,10 +84,9 @@ class LogInteractionOutput(BaseModel):
 
 
 def _extract(rep_utterance: str) -> ExtractedFields:
-    llm = get_heavy_llm().with_structured_output(ExtractedFields)
-    result = llm.invoke(_EXTRACTION_PROMPT.format(utterance=rep_utterance))
-    assert isinstance(result, ExtractedFields)
-    return result
+    return extract_structured(
+        _EXTRACTION_PROMPT.format(utterance=rep_utterance), ExtractedFields
+    )
 
 
 def _resolve_hcp(

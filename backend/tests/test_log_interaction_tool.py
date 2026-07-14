@@ -1,6 +1,6 @@
 import uuid
 from collections.abc import Generator
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -35,12 +35,6 @@ def hcp_id() -> Generator[str, None, None]:
         db.commit()
 
 
-def _mock_llm(extraction: ExtractedFields) -> MagicMock:
-    llm = MagicMock()
-    llm.with_structured_output.return_value.invoke.return_value = extraction
-    return llm
-
-
 def test_log_interaction_creates_success(hcp_id: str) -> None:
     extraction = ExtractedFields(
         hcp_name="Priya Shah",
@@ -57,8 +51,8 @@ def test_log_interaction_creates_success(hcp_id: str) -> None:
     )
 
     with patch(
-        "app.agent.tools.log_interaction.get_heavy_llm",
-        return_value=_mock_llm(extraction),
+        "app.agent.tools.log_interaction.extract_structured",
+        return_value=extraction,
     ):
         with SessionLocal() as db:
             result = log_interaction(
@@ -85,8 +79,8 @@ def test_log_interaction_unresolvable_hcp() -> None:
     )
 
     with patch(
-        "app.agent.tools.log_interaction.get_heavy_llm",
-        return_value=_mock_llm(extraction),
+        "app.agent.tools.log_interaction.extract_structured",
+        return_value=extraction,
     ):
         with SessionLocal() as db:
             result = log_interaction(
@@ -115,8 +109,8 @@ def test_log_interaction_ambiguous_hcp(hcp_id: str) -> None:
 
     try:
         with patch(
-            "app.agent.tools.log_interaction.get_heavy_llm",
-            return_value=_mock_llm(extraction),
+            "app.agent.tools.log_interaction.extract_structured",
+            return_value=extraction,
         ):
             with SessionLocal() as db:
                 result = log_interaction(
@@ -142,8 +136,8 @@ def test_log_interaction_missing_topic(hcp_id: str) -> None:
     extraction = ExtractedFields(hcp_name="Priya Shah", interaction_type="Call")
 
     with patch(
-        "app.agent.tools.log_interaction.get_heavy_llm",
-        return_value=_mock_llm(extraction),
+        "app.agent.tools.log_interaction.extract_structured",
+        return_value=extraction,
     ):
         with SessionLocal() as db:
             result = log_interaction(
