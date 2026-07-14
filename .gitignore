@@ -32,6 +32,7 @@ docs/med-agent-crm.pdf
 .DS_Store
 .vscode/
 .idea/
+.claude/settings.local.json
 
 # Logs
 *.log
