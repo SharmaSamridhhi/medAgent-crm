@@ -1,6 +1,9 @@
 from fastapi import APIRouter
 
-api_router = APIRouter()
+from app.api.v1.hcps import router as hcps_router
 
-# Domain routers (hcps, interactions, agent, ...) are included here as
-# they land — see MEDGENT-006, MEDGENT-007, MEDGENT-015.
+api_router = APIRouter()
+api_router.include_router(hcps_router)
+
+# Further domain routers (interactions, agent, ...) are included here as
+# they land — see MEDGENT-007, MEDGENT-015.

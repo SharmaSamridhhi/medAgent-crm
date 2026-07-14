@@ -15,7 +15,7 @@ resolved in MEDGENT-005.
 | Spec | Title | Status |
 |------|-------|--------|
 | [MEDGENT-005](../MEDGENT-005-fastapi-skeleton.md) | FastAPI app skeleton | Done |
-| [MEDGENT-006](../MEDGENT-006-hcp-domain-crud.md) | HCP domain model & CRUD API | To Do |
+| [MEDGENT-006](../MEDGENT-006-hcp-domain-crud.md) | HCP domain model & CRUD API | Done |
 | [MEDGENT-007](../MEDGENT-007-interaction-domain-crud.md) | Interaction domain model & CRUD API | To Do |
 
 ## Notes

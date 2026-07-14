@@ -46,7 +46,7 @@ No auth system in this build (single hardcoded demo rep — see
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
 | [MEDGENT-005](MEDGENT-005-fastapi-skeleton.md) | FastAPI app skeleton | MVP | Done | MEDGENT-003 | `MEDGENT-005-fastapi-skeleton` |
-| [MEDGENT-006](MEDGENT-006-hcp-domain-crud.md) | HCP domain model & CRUD API | MVP | To Do | MEDGENT-005 | `MEDGENT-006-hcp-domain-crud` |
+| [MEDGENT-006](MEDGENT-006-hcp-domain-crud.md) | HCP domain model & CRUD API | MVP | Done | MEDGENT-005 | `MEDGENT-006-hcp-domain-crud` |
 | [MEDGENT-007](MEDGENT-007-interaction-domain-crud.md) | Interaction domain model & CRUD API | MVP | To Do | MEDGENT-006 | `MEDGENT-007-interaction-domain-crud` |
 
 ## EPIC-03: LangGraph AI Agent & Tools
