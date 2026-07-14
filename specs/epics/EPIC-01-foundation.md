@@ -14,7 +14,7 @@ project's time-box — see `specs/README.md`.
 | Spec | Title | Priority | Status |
 |------|-------|----------|--------|
 | [MEDGENT-001](../MEDGENT-001-monorepo-scaffold.md) | Monorepo scaffold & tooling | MVP | Done |
-| [MEDGENT-002](../MEDGENT-002-docker-orchestration.md) | Docker & Docker Compose orchestration | MVP | To Do |
+| [MEDGENT-002](../MEDGENT-002-docker-orchestration.md) | Docker & Docker Compose orchestration | MVP | Done |
 | [MEDGENT-003](../MEDGENT-003-postgres-schema-migrations.md) | Postgres schema & migrations setup | MVP | To Do |
 | [MEDGENT-004](../MEDGENT-004-ci-pipeline.md) | CI pipeline | **Stretch** | To Do |
 

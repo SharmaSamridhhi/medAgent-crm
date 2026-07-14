@@ -1,6 +1,6 @@
 # MEDGENT-002: Docker & Docker Compose orchestration
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-01: Foundation & Infrastructure](epics/EPIC-01-foundation.md)
 **Branch:** `MEDGENT-002-docker-orchestration`
@@ -20,20 +20,20 @@ Docker Compose, per `steering/04-architecture-tech-stack.md`.
 
 ## Acceptance criteria
 
-- [ ] `backend/Dockerfile` builds a working image that serves the FastAPI
+- [x] `backend/Dockerfile` builds a working image that serves the FastAPI
       app (`/health` responds) via Uvicorn.
-- [ ] `frontend/Dockerfile` builds a working dev-mode image serving the Vite
+- [x] `frontend/Dockerfile` builds a working dev-mode image serving the Vite
       dev server (prod-style static build can be a follow-up, not required
       here).
-- [ ] Root `docker-compose.yml` defines `postgres`, `backend`, `frontend`
+- [x] Root `docker-compose.yml` defines `postgres`, `backend`, `frontend`
       services, wired with correct depends_on/health checks, using env vars
       from `.env` (not hardcoded credentials).
-- [ ] `docker compose up` brings up all three services such that: Postgres
+- [x] `docker compose up` brings up all three services such that: Postgres
       is reachable from `backend`, `backend` `/health` responds, and
       `frontend` dev server is reachable in a browser.
-- [ ] `.env.example` updated with `DATABASE_URL` and any Postgres-specific
+- [x] `.env.example` updated with `DATABASE_URL` and any Postgres-specific
       vars (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`).
-- [ ] `README.md` updated with the `docker compose up` quick-start,
+- [x] `README.md` updated with the `docker compose up` quick-start,
       superseding (not deleting) the MEDGENT-001 non-Docker instructions.
 
 ## Technical details
