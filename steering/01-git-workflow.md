@@ -129,3 +129,15 @@ Only active when the user has explicitly said to batch an epic this way
   they decide when to push and open the PR, same as Mode A.
 - If a spec inside the epic turns out to depend on something outside the
   epic that isn't on `main` yet, stop and flag it rather than guessing.
+
+### Checkpoint exception for specs needing a real external integration
+
+If a spec's acceptance criteria can only be genuinely verified against a
+live external service the user controls (an API key/account only they can
+provision — e.g. MEDGENT-009's Groq integration), don't commit it purely
+on the strength of mocked tests. Implement it, run it live once against
+the real credential (already in the user's local, gitignored `.env` —
+never ask them to paste a live key into chat), show them the result, and
+only commit once they've confirmed it actually works. Every other spec in
+the epic still follows the normal Mode B flow (implement → verify →
+commit → move on) without waiting for a checkpoint.
