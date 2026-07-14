@@ -1,6 +1,6 @@
 # MEDGENT-007: Interaction domain model & CRUD API
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-02: Backend Core Services](epics/EPIC-02-backend-core.md)
 **Branch:** `MEDGENT-007-interaction-domain-crud`
@@ -28,7 +28,7 @@ data regardless of entry method.
 
 ## Acceptance criteria
 
-- [ ] `interactions` table extended (via migration) to include, matching
+- [x] `interactions` table extended (via migration) to include, matching
       the mockup's field set:
       - `hcp_id` (FK), `rep_id` (FK)
       - `interaction_type` (e.g. Meeting, Call, Email, Conference —
@@ -45,18 +45,18 @@ data regardless of entry method.
         *tracked, dated* follow-up record itself is MEDGENT-013's
         `follow_ups` table, this field is just the free-text note)
       - `source` (`form` | `chat`), `created_at`, `updated_at`
-- [ ] `GET /api/v1/interactions` — list, filterable by `hcp_id`, `rep_id`,
+- [x] `GET /api/v1/interactions` — list, filterable by `hcp_id`, `rep_id`,
       date range; paginated.
-- [ ] `GET /api/v1/interactions/{id}` — fetch one.
-- [ ] `POST /api/v1/interactions` — create.
-- [ ] `PATCH /api/v1/interactions/{id}` — partial update.
-- [ ] `DELETE /api/v1/interactions/{id}` — soft delete, consistent with
+- [x] `GET /api/v1/interactions/{id}` — fetch one.
+- [x] `POST /api/v1/interactions` — create.
+- [x] `PATCH /api/v1/interactions/{id}` — partial update.
+- [x] `DELETE /api/v1/interactions/{id}` — soft delete, consistent with
       MEDGENT-006's approach.
-- [ ] `hcp_id` must reference an existing, active HCP — 422/404 otherwise.
-- [ ] `sentiment`, if provided, must be one of the three allowed values —
+- [x] `hcp_id` must reference an existing, active HCP — 422/404 otherwise.
+- [x] `sentiment`, if provided, must be one of the three allowed values —
       422 otherwise.
-- [ ] Pydantic request/response schemas distinct from the ORM model.
-- [ ] Tests: happy-path CRUD, invalid `hcp_id`, invalid `sentiment`,
+- [x] Pydantic request/response schemas distinct from the ORM model.
+- [x] Tests: happy-path CRUD, invalid `hcp_id`, invalid `sentiment`,
       validation failures.
 
 ## Technical details
