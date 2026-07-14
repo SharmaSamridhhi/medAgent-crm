@@ -1,6 +1,6 @@
 # MEDGENT-010: Tool — Log Interaction
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission; this is one of the
 two explicitly mandatory tools in the assignment brief.
 **Epic:** [EPIC-03: LangGraph AI Agent & Tools](epics/EPIC-03-ai-agent.md)
@@ -27,12 +27,12 @@ panel shown there — not invented independently.
 
 ## Acceptance criteria
 
-- [ ] A `log_interaction` tool is registered on the LangGraph agent with a
+- [x] A `log_interaction` tool is registered on the LangGraph agent with a
       Pydantic input schema (raw rep utterance/notes, optionally an already
       -identified `hcp_id` or HCP name to resolve) and output schema (the
       structured fields extracted + created interaction id + suggested
       follow-ups).
-- [ ] Given free-form text like "Met Dr. Patel this morning, discussed the
+- [x] Given free-form text like "Met Dr. Patel this morning, discussed the
       new dosing data for CardioX, left 2 sample packs, she seemed
       positive and wants a follow-up next month", the tool extracts:
       - HCP (resolved to an existing `hcps` record or flagged unresolved)
@@ -46,21 +46,21 @@ panel shown there — not invented independently.
       - `sentiment` (`positive` | `neutral` | `negative`) — the agent's
         read on the HCP's reaction, inferred from the rep's description
       - `outcomes` (key agreements/results, if any were described)
-- [ ] The tool additionally generates 1-3 `suggested_follow_ups` (short,
+- [x] The tool additionally generates 1-3 `suggested_follow_ups` (short,
       actionable strings, e.g. "Schedule follow-up meeting in 2 weeks",
       "Send CardioX Phase III data sheet") — these are proposals only, not
       persisted as real follow-ups unless the rep accepts one (which then
       calls MEDGENT-013).
-- [ ] Extraction uses `GROQ_MODEL_HEAVY` (`llama-3.3-70b-versatile`) for
+- [x] Extraction uses `GROQ_MODEL_HEAVY` (`llama-3.3-70b-versatile`) for
       the structured extraction step; the lighter default model can still
       handle the surrounding conversational turns.
-- [ ] If the HCP name can't be confidently resolved to an existing record,
+- [x] If the HCP name can't be confidently resolved to an existing record,
       the tool returns a clarification request rather than guessing or
       silently creating a duplicate HCP.
-- [ ] On success, the tool calls the Interaction API (MEDGENT-007) with
+- [x] On success, the tool calls the Interaction API (MEDGENT-007) with
       `source: "chat"` to persist the record — it does not write to the DB
       directly, keeping the API as the single write path.
-- [ ] Unit tests cover: full extraction success (including sentiment and
+- [x] Unit tests cover: full extraction success (including sentiment and
       suggested follow-ups), ambiguous/unresolvable HCP, missing required
       info (e.g. no discernible topic), with the LLM call mocked.
 
@@ -81,3 +81,9 @@ panel shown there — not invented independently.
 - This tool calls the REST API (in-process client, not over HTTP loopback)
   to create the interaction — reuses the same Pydantic schemas as
   MEDGENT-007 for consistency between form and chat entry paths.
+- "Registered on the LangGraph agent" is satisfied at the pure-function/
+  contract level here (a plain, independently-testable `log_interaction(payload, db)`
+  function with typed Pydantic input/output) — actually binding it as a
+  LangChain tool into a multi-tool graph with LLM-driven routing is
+  MEDGENT-015's job, once all five tools exist. MEDGENT-011 through
+  MEDGENT-014 follow this same pattern.

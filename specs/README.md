@@ -56,7 +56,7 @@ The five required tools (two mandatory: Log Interaction, Edit Interaction).
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
 | [MEDGENT-009](MEDGENT-009-groq-langgraph-scaffold.md) | Groq LLM integration & agent scaffolding | MVP | Done | MEDGENT-005 | `MEDGENT-009-groq-langgraph-scaffold` |
-| [MEDGENT-010](MEDGENT-010-tool-log-interaction.md) | Tool: Log Interaction *(mandatory)* | MVP | To Do | MEDGENT-007, MEDGENT-009 | `MEDGENT-010-tool-log-interaction` |
+| [MEDGENT-010](MEDGENT-010-tool-log-interaction.md) | Tool: Log Interaction *(mandatory)* | MVP | Done | MEDGENT-007, MEDGENT-009 | `MEDGENT-010-tool-log-interaction` |
 | [MEDGENT-011](MEDGENT-011-tool-edit-interaction.md) | Tool: Edit Interaction *(mandatory)* | MVP | To Do | MEDGENT-007, MEDGENT-010 | `MEDGENT-011-tool-edit-interaction` |
 | [MEDGENT-012](MEDGENT-012-tool-retrieve-hcp-history.md) | Tool: Retrieve HCP History | MVP | To Do | MEDGENT-006, MEDGENT-007, MEDGENT-009 | `MEDGENT-012-tool-retrieve-hcp-history` |
 | [MEDGENT-013](MEDGENT-013-tool-schedule-follow-up.md) | Tool: Schedule Follow-up | MVP | To Do | MEDGENT-007, MEDGENT-009 | `MEDGENT-013-tool-schedule-follow-up` |
