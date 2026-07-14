@@ -1,0 +1,54 @@
+# MEDGENT-009: Groq LLM integration & agent scaffolding
+
+**Status:** To Do
+**Priority:** MVP — required for the 36-hour submission
+**Epic:** [EPIC-03: LangGraph AI Agent & Tools](epics/EPIC-03-ai-agent.md)
+**Branch:** `MEDGENT-009-groq-langgraph-scaffold`
+**Depends on:** MEDGENT-005
+
+## User story
+
+As a developer, I want a working LangGraph graph wired to Groq, with no
+tools yet, so that every tool spec (MEDGENT-010 through MEDGENT-014) can
+plug into an already-working agent loop instead of each reinventing LLM
+wiring.
+
+## Context
+
+This is the agent's foundation: the LangGraph state definition, the Groq
+client wrapper, and a trivial single-node graph that can hold a
+conversation with no tools. Tools are added incrementally by later specs.
+This keeps MEDGENT-009 testable in isolation (can the agent talk at all?)
+before any tool-calling complexity is introduced.
+
+## Acceptance criteria
+
+- [ ] `backend/app/agent/llm.py` wraps the Groq client, reading
+      `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT` (`gemma2-9b-it`), and
+      `GROQ_MODEL_HEAVY` (`llama-3.3-70b-versatile`) from settings — no
+      hardcoded key or model name anywhere else in the codebase.
+- [ ] `backend/app/agent/state.py` defines the LangGraph state schema:
+      conversation messages, current rep id, optional in-progress
+      interaction draft, optional active HCP context.
+- [ ] `backend/app/agent/graph.py` defines a minimal graph: one LLM node,
+      no tools, that can take a user message and return a model response
+      using `GROQ_MODEL_DEFAULT`.
+- [ ] The graph is invokable from a small script or test without going
+      through the API layer yet (API endpoint is MEDGENT-015).
+- [ ] Tests mock the Groq client — no real network calls in the test suite,
+      per `steering/02-code-quality.md`.
+- [ ] `.env.example` updated with `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT`,
+      `GROQ_MODEL_HEAVY`.
+
+## Technical details
+
+- Use the official Groq SDK (or LangChain's `langchain-groq` integration if
+  it simplifies LangGraph interop) — pick whichever integrates more
+  directly with LangGraph's tool-calling node pattern, and note the choice
+  here once made.
+- Keep the state schema intentionally small at this stage; tool-specific
+  state (e.g. draft interaction fields) is added when MEDGENT-010 needs it,
+  not speculatively here.
+- No tool-calling wiring yet — that pattern is introduced by MEDGENT-010,
+  the first tool, so the tool-routing design is proven against a real tool
+  rather than designed in the abstract.
