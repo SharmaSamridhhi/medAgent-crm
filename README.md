@@ -9,10 +9,22 @@ backend.
 See `specs/README.md` for the full spec index and build order, and
 `steering/` for the project's development rules.
 
-## Running locally (no Docker yet)
+## Running locally with Docker (recommended)
 
-Docker Compose orchestration lands in MEDGENT-002; until then, run each
-app directly.
+```bash
+cp .env.example .env
+docker compose up
+```
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8000/health`
+- Postgres: `localhost:5432` (credentials from `.env`)
+
+Source is bind-mounted into both the `backend` and `frontend` containers,
+so edits on your host hot-reload inside the containers. `docker compose
+down` stops everything; add `-v` to also drop the Postgres volume.
+
+## Running locally without Docker
 
 ### Backend
 
