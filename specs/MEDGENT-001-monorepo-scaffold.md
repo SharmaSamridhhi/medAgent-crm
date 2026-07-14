@@ -1,6 +1,6 @@
 # MEDGENT-001: Monorepo scaffold & tooling
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-01: Foundation & Infrastructure](epics/EPIC-01-foundation.md)
 **Branch:** `MEDGENT-001-monorepo-scaffold`
@@ -22,21 +22,21 @@ skeleton; it does not implement any product feature.
 
 ## Acceptance criteria
 
-- [ ] Root-level `frontend/` and `backend/` directories exist matching the
+- [x] Root-level `frontend/` and `backend/` directories exist matching the
       layout in `steering/04-architecture-tech-stack.md`.
-- [ ] `frontend/` is a working Vite + React + TypeScript app that starts
+- [x] `frontend/` is a working Vite + React + TypeScript app that starts
       with `npm run dev` and shows a placeholder page.
-- [ ] `frontend/` has ESLint + Prettier configured and a `lint`/`format`
+- [x] `frontend/` has ESLint + Prettier configured and a `lint`/`format`
       npm script; both run clean on the placeholder app.
-- [ ] `backend/` is a FastAPI app (`backend/app/main.py`) with a `/health`
+- [x] `backend/` is a FastAPI app (`backend/app/main.py`) with a `/health`
       endpoint returning `{"status": "ok"}`, runnable via `uvicorn`.
-- [ ] `backend/` has Ruff (lint + format) and mypy configured, both clean on
+- [x] `backend/` has Ruff (lint + format) and mypy configured, both clean on
       the placeholder app; dependencies managed via `pyproject.toml`.
-- [ ] Root `.env.example` exists listing every env var either app currently
+- [x] Root `.env.example` exists listing every env var either app currently
       needs (even if placeholder values).
-- [ ] Root `README.md` explains how to run frontend and backend locally
+- [x] Root `README.md` explains how to run frontend and backend locally
       without Docker (Docker comes in MEDGENT-002).
-- [ ] `specs/README.md` and this file's `Status` updated per the git
+- [x] `specs/README.md` and this file's `Status` updated per the git
       workflow.
 
 ## Technical details
