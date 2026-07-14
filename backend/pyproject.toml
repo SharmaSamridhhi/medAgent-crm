@@ -10,6 +10,8 @@ dependencies = [
     "alembic>=1.13",
     "psycopg[binary]>=3.2",
     "pydantic-settings>=2.6",
+    "langgraph>=0.2",
+    "langchain-groq>=0.2",
 ]
 
 [project.optional-dependencies]

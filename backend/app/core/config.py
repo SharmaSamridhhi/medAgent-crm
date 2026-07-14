@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # Not consumed until MEDGENT-009 wires up the Groq client, but the
     # settings surface is established here per this spec's scope.
     groq_api_key: str | None = None
-    groq_model_default: str = "gemma2-9b-it"
+    groq_model_default: str = "llama-3.1-8b-instant"
     groq_model_heavy: str = "llama-3.3-70b-versatile"
 
     @property

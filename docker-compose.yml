@@ -19,6 +19,11 @@ services:
     build: ./backend
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      DEFAULT_REP_ID: ${DEFAULT_REP_ID}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GROQ_MODEL_DEFAULT: ${GROQ_MODEL_DEFAULT}
+      GROQ_MODEL_HEAVY: ${GROQ_MODEL_HEAVY}
     ports:
       - "8000:8000"
     volumes:

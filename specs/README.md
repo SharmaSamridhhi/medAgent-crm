@@ -55,13 +55,13 @@ The five required tools (two mandatory: Log Interaction, Edit Interaction).
 
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
-| [MEDGENT-009](MEDGENT-009-groq-langgraph-scaffold.md) | Groq LLM integration & agent scaffolding | MVP | To Do | MEDGENT-005 | `MEDGENT-009-groq-langgraph-scaffold` |
-| [MEDGENT-010](MEDGENT-010-tool-log-interaction.md) | Tool: Log Interaction *(mandatory)* | MVP | To Do | MEDGENT-007, MEDGENT-009 | `MEDGENT-010-tool-log-interaction` |
-| [MEDGENT-011](MEDGENT-011-tool-edit-interaction.md) | Tool: Edit Interaction *(mandatory)* | MVP | To Do | MEDGENT-007, MEDGENT-010 | `MEDGENT-011-tool-edit-interaction` |
-| [MEDGENT-012](MEDGENT-012-tool-retrieve-hcp-history.md) | Tool: Retrieve HCP History | MVP | To Do | MEDGENT-006, MEDGENT-007, MEDGENT-009 | `MEDGENT-012-tool-retrieve-hcp-history` |
-| [MEDGENT-013](MEDGENT-013-tool-schedule-follow-up.md) | Tool: Schedule Follow-up | MVP | To Do | MEDGENT-007, MEDGENT-009 | `MEDGENT-013-tool-schedule-follow-up` |
-| [MEDGENT-014](MEDGENT-014-tool-compliance-flag.md) | Tool: Compliance Flag | MVP | To Do | MEDGENT-009, MEDGENT-010 | `MEDGENT-014-tool-compliance-flag` |
-| [MEDGENT-015](MEDGENT-015-agent-orchestration-endpoint.md) | Agent orchestration & conversational endpoint | MVP | To Do | MEDGENT-010..014 | `MEDGENT-015-agent-orchestration-endpoint` |
+| [MEDGENT-009](MEDGENT-009-groq-langgraph-scaffold.md) | Groq LLM integration & agent scaffolding | MVP | Done | MEDGENT-005 | `MEDGENT-009-groq-langgraph-scaffold` |
+| [MEDGENT-010](MEDGENT-010-tool-log-interaction.md) | Tool: Log Interaction *(mandatory)* | MVP | Done | MEDGENT-007, MEDGENT-009 | `MEDGENT-010-tool-log-interaction` |
+| [MEDGENT-011](MEDGENT-011-tool-edit-interaction.md) | Tool: Edit Interaction *(mandatory)* | MVP | Done | MEDGENT-007, MEDGENT-010 | `MEDGENT-011-tool-edit-interaction` |
+| [MEDGENT-012](MEDGENT-012-tool-retrieve-hcp-history.md) | Tool: Retrieve HCP History | MVP | Done | MEDGENT-006, MEDGENT-007, MEDGENT-009 | `MEDGENT-012-tool-retrieve-hcp-history` |
+| [MEDGENT-013](MEDGENT-013-tool-schedule-follow-up.md) | Tool: Schedule Follow-up | MVP | Done | MEDGENT-007, MEDGENT-009 | `MEDGENT-013-tool-schedule-follow-up` |
+| [MEDGENT-014](MEDGENT-014-tool-compliance-flag.md) | Tool: Compliance Flag | MVP | Done | MEDGENT-009, MEDGENT-010 | `MEDGENT-014-tool-compliance-flag` |
+| [MEDGENT-015](MEDGENT-015-agent-orchestration-endpoint.md) | Agent orchestration & conversational endpoint | MVP | Done | MEDGENT-010..014 | `MEDGENT-015-agent-orchestration-endpoint` |
 
 ## EPIC-04: Frontend Core
 

@@ -1,6 +1,6 @@
 # MEDGENT-009: Groq LLM integration & agent scaffolding
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-03: LangGraph AI Agent & Tools](epics/EPIC-03-ai-agent.md)
 **Branch:** `MEDGENT-009-groq-langgraph-scaffold`
@@ -23,29 +23,31 @@ before any tool-calling complexity is introduced.
 
 ## Acceptance criteria
 
-- [ ] `backend/app/agent/llm.py` wraps the Groq client, reading
-      `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT` (`gemma2-9b-it`), and
+- [x] `backend/app/agent/llm.py` wraps the Groq client, reading
+      `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT` (`llama-3.1-8b-instant` — the
+      brief's `gemma2-9b-it` was decommissioned by Groq in Oct 2025; this
+      is Groq's own recommended replacement, same speed tier), and
       `GROQ_MODEL_HEAVY` (`llama-3.3-70b-versatile`) from settings — no
       hardcoded key or model name anywhere else in the codebase.
-- [ ] `backend/app/agent/state.py` defines the LangGraph state schema:
+- [x] `backend/app/agent/state.py` defines the LangGraph state schema:
       conversation messages, current rep id, optional in-progress
       interaction draft, optional active HCP context.
-- [ ] `backend/app/agent/graph.py` defines a minimal graph: one LLM node,
+- [x] `backend/app/agent/graph.py` defines a minimal graph: one LLM node,
       no tools, that can take a user message and return a model response
       using `GROQ_MODEL_DEFAULT`.
-- [ ] The graph is invokable from a small script or test without going
+- [x] The graph is invokable from a small script or test without going
       through the API layer yet (API endpoint is MEDGENT-015).
-- [ ] Tests mock the Groq client — no real network calls in the test suite,
+- [x] Tests mock the Groq client — no real network calls in the test suite,
       per `steering/02-code-quality.md`.
-- [ ] `.env.example` updated with `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT`,
+- [x] `.env.example` updated with `GROQ_API_KEY`, `GROQ_MODEL_DEFAULT`,
       `GROQ_MODEL_HEAVY`.
 
 ## Technical details
 
-- Use the official Groq SDK (or LangChain's `langchain-groq` integration if
-  it simplifies LangGraph interop) — pick whichever integrates more
-  directly with LangGraph's tool-calling node pattern, and note the choice
-  here once made.
+- Uses `langchain-groq`'s `ChatGroq` (not the bare Groq SDK) — it's a
+  `langchain_core` chat model, so it plugs directly into LangGraph's
+  message-based state and `bind_tools`/tool-calling node pattern that
+  MEDGENT-010+ need, rather than requiring a hand-rolled adapter.
 - Keep the state schema intentionally small at this stage; tool-specific
   state (e.g. draft interaction fields) is added when MEDGENT-010 needs it,
   not speculatively here.

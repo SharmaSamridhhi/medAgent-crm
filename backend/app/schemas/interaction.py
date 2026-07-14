@@ -6,6 +6,15 @@ from pydantic import BaseModel, ConfigDict
 
 Sentiment = Literal["positive", "neutral", "negative"]
 Source = Literal["form", "chat"]
+ComplianceFlagCategory = Literal[
+    "off_label_claim", "unsubstantiated_claim", "adverse_event_mention", "other"
+]
+
+
+class ComplianceFlag(BaseModel):
+    category: ComplianceFlagCategory
+    excerpt: str
+    rationale: str
 
 
 class InteractionCreate(BaseModel):
@@ -34,6 +43,8 @@ class InteractionUpdate(BaseModel):
     outcomes: str | None = None
     follow_up_notes: str | None = None
     source: Source | None = None
+    compliance_flags: list[ComplianceFlag] | None = None
+    has_compliance_flags: bool | None = None
 
 
 class InteractionRead(BaseModel):
@@ -52,6 +63,8 @@ class InteractionRead(BaseModel):
     outcomes: str | None
     follow_up_notes: str | None
     source: Source
+    compliance_flags: list[ComplianceFlag]
+    has_compliance_flags: bool
     is_active: bool
     created_at: datetime
     updated_at: datetime
