@@ -1,6 +1,6 @@
 # MEDGENT-006: HCP domain model & CRUD API
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-02: Backend Core Services](epics/EPIC-02-backend-core.md)
 **Branch:** `MEDGENT-006-hcp-domain-crud`
@@ -22,22 +22,22 @@ agent's "Retrieve HCP History" tool (MEDGENT-012).
 
 ## Acceptance criteria
 
-- [ ] `GET /api/v1/hcps` — list HCPs, with basic search/filter by name and
+- [x] `GET /api/v1/hcps` — list HCPs, with basic search/filter by name and
       specialty, paginated.
-- [ ] `GET /api/v1/hcps/{id}` — fetch a single HCP with full profile.
-- [ ] `POST /api/v1/hcps` — create an HCP (name required; specialty,
+- [x] `GET /api/v1/hcps/{id}` — fetch a single HCP with full profile.
+- [x] `POST /api/v1/hcps` — create an HCP (name required; specialty,
       institution, contact info optional).
-- [ ] `PATCH /api/v1/hcps/{id}` — partial update.
-- [ ] `DELETE /api/v1/hcps/{id}` — soft delete (retain history for
+- [x] `PATCH /api/v1/hcps/{id}` — partial update.
+- [x] `DELETE /api/v1/hcps/{id}` — soft delete (retain history for
       interactions logged against them) rather than a hard delete.
-- [ ] Pydantic schemas for request/response are distinct from the
+- [x] Pydantic schemas for request/response are distinct from the
       SQLAlchemy model (no ORM object returned directly).
-- [ ] Validation errors return 422 with a clear field-level message;
+- [x] Validation errors return 422 with a clear field-level message;
       not-found returns 404.
-- [ ] Alembic migration adds any columns beyond the MEDGENT-003 baseline
+- [x] Alembic migration adds any columns beyond the MEDGENT-003 baseline
       that this spec's acceptance criteria require (e.g. `is_active` for
       soft delete).
-- [ ] Tests: happy-path create/read/update/delete, plus not-found and
+- [x] Tests: happy-path create/read/update/delete, plus not-found and
       validation-failure cases, per `steering/02-code-quality.md`.
 
 ## Technical details
