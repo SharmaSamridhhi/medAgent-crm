@@ -1,10 +1,10 @@
 from sqlalchemy import select
 
 from app.core.db import SessionLocal
-from app.models import Rep
+from app.models import HCP
 
 
 def test_can_connect_and_query_empty_table() -> None:
     with SessionLocal() as session:
-        reps = session.scalars(select(Rep)).all()
-        assert reps == []
+        hcps = session.scalars(select(HCP)).all()
+        assert hcps == []

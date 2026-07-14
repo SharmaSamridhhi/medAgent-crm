@@ -1,6 +1,6 @@
 # MEDGENT-005: FastAPI app skeleton
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-02: Backend Core Services](epics/EPIC-02-backend-core.md)
 **Branch:** `MEDGENT-005-fastapi-skeleton`
@@ -25,23 +25,23 @@ the trivial `get_current_rep` dependency the domain routers and agent use.
 
 ## Acceptance criteria
 
-- [ ] `backend/app/core/config.py` provides a Pydantic `Settings` class
+- [x] `backend/app/core/config.py` provides a Pydantic `Settings` class
       reading all env vars (DB URL, Groq key/model names, CORS origins,
       etc.) — no `os.environ` reads scattered elsewhere in the codebase.
-- [ ] `backend/app/main.py` assembles the app from an `api/` router
+- [x] `backend/app/main.py` assembles the app from an `api/` router
       registry (`api/v1/router.py` aggregating sub-routers), rather than
       defining routes inline.
-- [ ] CORS configured to allow the frontend's dev origin (from settings).
-- [ ] Structured logging configured (JSON or key=value, not bare `print`),
+- [x] CORS configured to allow the frontend's dev origin (from settings).
+- [x] Structured logging configured (JSON or key=value, not bare `print`),
       with request ID or similar correlation available for later
       observability work (MEDGENT-024).
-- [ ] `/health` endpoint now also confirms DB connectivity (not just that
+- [x] `/health` endpoint now also confirms DB connectivity (not just that
       the process is up).
-- [ ] `/api/v1/` prefix established as the base for all future domain
+- [x] `/api/v1/` prefix established as the base for all future domain
       routes per `steering/04-architecture-tech-stack.md`.
-- [ ] A basic test confirms the app starts and `/health` returns 200 with a
+- [x] A basic test confirms the app starts and `/health` returns 200 with a
       real DB connection (using the CI Postgres service / local Compose).
-- [ ] A `get_current_rep` FastAPI dependency resolves to a single hardcoded
+- [x] A `get_current_rep` FastAPI dependency resolves to a single hardcoded
       demo rep (seeded via the MEDGENT-003 baseline `reps` row, id read
       from a `DEFAULT_REP_ID` env var or simply the first row) — no
       header/token check, no login flow. This is the one and only identity
