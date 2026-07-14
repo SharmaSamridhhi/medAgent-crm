@@ -1,6 +1,6 @@
 # MEDGENT-014: Tool — Compliance Flag
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission (this is the 5th
 of the 5 required agent tools).
 **Epic:** [EPIC-03: LangGraph AI Agent & Tools](epics/EPIC-03-ai-agent.md)
@@ -31,27 +31,27 @@ two here.
 
 ## Acceptance criteria
 
-- [ ] `interactions` table extended (migration) with `compliance_flags`
+- [x] `interactions` table extended (migration) with `compliance_flags`
       (JSONB — list of `{category, excerpt, rationale}`) and
       `has_compliance_flags` (bool, indexed) for quick filtering.
-- [ ] A `flag_compliance_risks` tool registered on the agent with a
+- [x] A `flag_compliance_risks` tool registered on the agent with a
       Pydantic input schema (the interaction's notes/topics text) and
       output schema (list of flags, possibly empty).
-- [ ] Flag categories cover at minimum: off-label claim, unsubstantiated
+- [x] Flag categories cover at minimum: off-label claim, unsubstantiated
       efficacy/safety claim, potential adverse event mention, other (with
       rationale).
-- [ ] The tool uses `GROQ_MODEL_HEAVY` given the higher stakes of missed or
+- [x] The tool uses `GROQ_MODEL_HEAVY` given the higher stakes of missed or
       wrong flags on regulated content.
-- [ ] The tool runs automatically as part of `log_interaction`
+- [x] The tool runs automatically as part of `log_interaction`
       (MEDGENT-010) after an interaction is created, updating the
       persisted record with any flags — it does not block the save (a
       flagged interaction still gets logged; it's a review signal, not a
       gate).
-- [ ] Flags are surfaced back in the tool's conversational response so the
+- [x] Flags are surfaced back in the tool's conversational response so the
       rep sees them immediately (e.g. "Logged — heads up, this mentions a
       possible adverse event; you may want to check AE reporting
       requirements").
-- [ ] Unit tests cover: clean text (no flags), off-label mention, AE
+- [x] Unit tests cover: clean text (no flags), off-label mention, AE
       mention, with the LLM call mocked. Include a short fixture set of
       realistic pharma rep notes for both flagged and clean cases — reuse
       for the demo video if a flagged example is needed there.
@@ -70,3 +70,14 @@ two here.
   is filled in — if either is non-empty on a form-sourced interaction,
   this tool should still run against it (wire that into MEDGENT-019/021,
   not just the chat path).
+- Screens the persisted `topics_discussed` + `outcomes` text (not the raw
+  chat utterance directly) so the same tool works identically for both
+  entry paths. This surfaced a real bug live-testing this spec: MEDGENT-010's
+  extraction prompt was compressing `topics_discussed` down to a bare
+  product-name label (e.g. "CardioX") instead of a fuller account,
+  silently discarding the exact off-label/adverse-event language this
+  tool needs to see. Fixed by adding an explicit rule to MEDGENT-010's
+  `_EXTRACTION_PROMPT` to preserve specific claims/statements verbatim in
+  `topics_discussed` — confirmed live afterward that a genuinely risky
+  note (off-label + AE mention) now gets flagged correctly, and a clean
+  note still produces no false positives.

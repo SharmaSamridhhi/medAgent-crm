@@ -39,6 +39,12 @@ class Interaction(Base):
     outcomes: Mapped[str | None] = mapped_column(String, nullable=True)
     follow_up_notes: Mapped[str | None] = mapped_column(String, nullable=True)
     source: Mapped[str] = mapped_column(String, nullable=False)
+    compliance_flags: Mapped[list[dict[str, str]]] = mapped_column(
+        JSONB, nullable=False, default=list, server_default=text("'[]'::jsonb")
+    )
+    has_compliance_flags: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default="false", index=True
+    )
     is_active: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default="true"
     )

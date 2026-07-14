@@ -7,9 +7,18 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.agent.tools._extraction import extract_structured
-from app.api.v1.interactions import create_interaction
+from app.agent.tools.flag_compliance_risks import (
+    FlagComplianceRisksInput,
+    flag_compliance_risks,
+)
+from app.api.v1.interactions import create_interaction, update_interaction
 from app.models import HCP, Rep
-from app.schemas.interaction import InteractionCreate, Sentiment
+from app.schemas.interaction import (
+    ComplianceFlag,
+    InteractionCreate,
+    InteractionUpdate,
+    Sentiment,
+)
 
 _EXTRACTION_PROMPT = (
     "You are helping a pharmaceutical sales rep log a call or meeting with "
@@ -22,6 +31,13 @@ _EXTRACTION_PROMPT = (
     "- attendees: OTHER people present besides the rep and the HCP being "
     "visited (e.g. a nurse, another rep). Do not include the rep or the "
     "HCP themselves. Leave empty if no one else was mentioned.\n"
+    "- topics_discussed: a fairly complete account of what was discussed, "
+    "in your own words, but preserving every specific claim, statement, or "
+    "patient-related comment from the note verbatim or near-verbatim — "
+    "do NOT compress this down to just a product name or a one-word "
+    "label. This field is also used for downstream compliance review, so "
+    "omitting specifics here (e.g. an off-label claim or a mention of a "
+    "patient's adverse reaction) means they go unreviewed.\n"
     "- materials_shared: marketing/educational collateral only (brochures, "
     "data sheets, leave-behinds). Never physical product samples.\n"
     "- samples_distributed: physical product samples only (e.g. '2 packs "
@@ -80,6 +96,7 @@ class LogInteractionOutput(BaseModel):
     sentiment: Sentiment | None = None
     outcomes: str | None = None
     suggested_follow_ups: list[str] = []
+    compliance_flags: list[ComplianceFlag] = []
     candidate_hcps: list[HCPCandidate] = []
 
 
@@ -158,9 +175,31 @@ def log_interaction(payload: LogInteractionInput, db: Session) -> LogInteraction
     interaction = create_interaction(payload=create_payload, db=db, current_rep=rep)
     kind = create_payload.interaction_type.lower()
 
+    screen_text = " ".join(
+        part
+        for part in (create_payload.topics_discussed, create_payload.outcomes)
+        if part
+    )
+    flags = flag_compliance_risks(FlagComplianceRisksInput(text=screen_text)).flags
+    if flags:
+        flag_update = InteractionUpdate(
+            compliance_flags=flags, has_compliance_flags=True
+        )
+        interaction = update_interaction(
+            interaction_id=interaction.id, payload=flag_update, db=db
+        )
+
+    message = f"Logged your {kind} with {hcp.name}."
+    if flags:
+        categories = ", ".join(sorted({f.category.replace("_", " ") for f in flags}))
+        message += (
+            f" Heads up — this may involve {categories}; "
+            "you may want to review before finalizing."
+        )
+
     return LogInteractionOutput(
         status="created",
-        message=f"Logged your {kind} with {hcp.name}.",
+        message=message,
         interaction_id=interaction.id,
         hcp_id=hcp.id,
         interaction_type=create_payload.interaction_type,
@@ -172,4 +211,5 @@ def log_interaction(payload: LogInteractionInput, db: Session) -> LogInteraction
         sentiment=create_payload.sentiment,
         outcomes=create_payload.outcomes,
         suggested_follow_ups=extraction.suggested_follow_ups[:3],
+        compliance_flags=flags,
     )

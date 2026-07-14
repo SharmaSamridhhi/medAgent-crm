@@ -6,6 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
+from app.agent.tools.flag_compliance_risks import FlagComplianceRisksOutput
 from app.agent.tools.log_interaction import (
     ExtractedFields,
     LogInteractionInput,
@@ -15,6 +16,7 @@ from app.core.config import DEFAULT_DEMO_REP_ID
 from app.core.db import SessionLocal
 from app.main import app
 from app.models import HCP, Interaction
+from app.schemas.interaction import ComplianceFlag
 
 client = TestClient(app)
 
@@ -50,9 +52,15 @@ def test_log_interaction_creates_success(hcp_id: str) -> None:
         ],
     )
 
-    with patch(
-        "app.agent.tools.log_interaction.extract_structured",
-        return_value=extraction,
+    with (
+        patch(
+            "app.agent.tools.log_interaction.extract_structured",
+            return_value=extraction,
+        ),
+        patch(
+            "app.agent.tools.log_interaction.flag_compliance_risks",
+            return_value=FlagComplianceRisksOutput(flags=[]),
+        ),
     ):
         with SessionLocal() as db:
             result = log_interaction(
@@ -69,6 +77,55 @@ def test_log_interaction_creates_success(hcp_id: str) -> None:
     assert result.sentiment == "positive"
     assert result.materials_shared == ["CardioX brochure"]
     assert len(result.suggested_follow_ups) == 2
+    assert result.compliance_flags == []
+
+
+def test_log_interaction_persists_and_surfaces_compliance_flags(
+    hcp_id: str,
+) -> None:
+    extraction = ExtractedFields(
+        hcp_name="Priya Shah",
+        interaction_type="Call",
+        topics_discussed="Patient reported a rash after taking CardioX",
+    )
+    flagged = FlagComplianceRisksOutput(
+        flags=[
+            ComplianceFlag(
+                category="adverse_event_mention",
+                excerpt="reported a rash",
+                rationale="Possible adverse event.",
+            )
+        ]
+    )
+
+    with (
+        patch(
+            "app.agent.tools.log_interaction.extract_structured",
+            return_value=extraction,
+        ),
+        patch(
+            "app.agent.tools.log_interaction.flag_compliance_risks",
+            return_value=flagged,
+        ),
+    ):
+        with SessionLocal() as db:
+            result = log_interaction(
+                LogInteractionInput(
+                    rep_utterance="Dr. Shah's patient had a rash on CardioX.",
+                    rep_id=DEFAULT_DEMO_REP_ID,
+                ),
+                db,
+            )
+
+    assert result.status == "created"
+    assert len(result.compliance_flags) == 1
+    assert result.compliance_flags[0].category == "adverse_event_mention"
+    assert "adverse event" in result.message
+
+    get_response = client.get(f"/api/v1/interactions/{result.interaction_id}")
+    body = get_response.json()
+    assert body["has_compliance_flags"] is True
+    assert len(body["compliance_flags"]) == 1
 
 
 def test_log_interaction_unresolvable_hcp() -> None:
