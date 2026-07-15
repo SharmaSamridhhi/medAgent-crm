@@ -1,0 +1,85 @@
+.side-effect-card {
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+}
+
+.side-effect-card__title {
+  margin: 0 0 var(--space-1);
+  font-weight: 600;
+}
+
+.side-effect-card__fields {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-2);
+}
+
+.side-effect-card__fields dt {
+  color: var(--color-text-muted);
+}
+
+.side-effect-card__fields dd {
+  margin: 0;
+}
+
+.side-effect-card__suggestions,
+.side-effect-card__changes {
+  margin-top: var(--space-2);
+}
+
+.side-effect-card__suggestions-title {
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-muted);
+}
+
+.side-effect-card__suggestions ul,
+.side-effect-card__changes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.side-effect-card__suggestions button {
+  background: none;
+  border: none;
+  padding: var(--space-1) 0;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.side-effect-card__suggestions button:hover {
+  text-decoration: underline;
+}
+
+.side-effect-card__flags {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+}
+
+.side-effect-card__flags-title {
+  margin: 0 0 var(--space-1);
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.side-effect-card__flags ul {
+  margin: 0;
+  padding-left: var(--space-4);
+}
+
+.side-effect-card__old-value {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.side-effect-card__new-value {
+  color: var(--color-success);
+}
