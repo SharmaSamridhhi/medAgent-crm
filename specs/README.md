@@ -97,6 +97,7 @@ observability demoted to stretch.
 | [MEDGENT-023](MEDGENT-023-automated-test-suites.md) | Critical-path smoke tests | MVP | To Do | MEDGENT-021, MEDGENT-022 | `MEDGENT-023-automated-test-suites` |
 | [MEDGENT-025](MEDGENT-025-docs-seed-data.md) | README, architecture docs & demo seed data | MVP | To Do | MEDGENT-023 | `MEDGENT-025-docs-seed-data` |
 | [MEDGENT-024](MEDGENT-024-observability-logging.md) | Observability & logging | **Stretch** | To Do | MEDGENT-015 | `MEDGENT-024-observability-logging` |
+| [MEDGENT-028](MEDGENT-028-render-deployment.md) | Render deployment config | Dev tooling | Done | MEDGENT-002, MEDGENT-005 | bundled into `EPIC-05-log-interaction-screen` |
 
 ## EPIC-07: HCP Admin Tooling
 
