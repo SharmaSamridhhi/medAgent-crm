@@ -1,6 +1,6 @@
 # EPIC-04: Frontend Core
 
-**Status:** To Do
+**Status:** Done
 
 ## Goal
 
