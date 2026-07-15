@@ -4,6 +4,17 @@
   padding: var(--space-5);
 }
 
+.log-interaction-screen__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-sm);
+}
+
+.log-interaction-screen__toolbar a {
+  color: var(--color-primary);
+}
+
 .log-interaction-screen__panels {
   display: grid;
   grid-template-columns: 1.3fr 1fr;

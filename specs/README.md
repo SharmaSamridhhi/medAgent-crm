@@ -98,6 +98,16 @@ observability demoted to stretch.
 | [MEDGENT-025](MEDGENT-025-docs-seed-data.md) | README, architecture docs & demo seed data | MVP | To Do | MEDGENT-023 | `MEDGENT-025-docs-seed-data` |
 | [MEDGENT-024](MEDGENT-024-observability-logging.md) | Observability & logging | **Stretch** | To Do | MEDGENT-015 | `MEDGENT-024-observability-logging` |
 
+## EPIC-07: HCP Admin Tooling
+
+Dev/tester convenience only — not part of the graded deliverable. Built
+out of the normal MVP/Stretch order at the user's explicit request to
+unblock manual testing of MEDGENT-021/022 before EPIC-06.
+
+| Spec | Title | Priority | Status | Depends on | Branch |
+|------|-------|----------|--------|------------|--------|
+| [MEDGENT-027](MEDGENT-027-hcp-admin-screen.md) | HCP admin screen (list + create) | Dev tooling | Done | MEDGENT-017 | bundled into `EPIC-05-log-interaction-screen` |
+
 ## MVP build order (the actual path to submission)
 
 ```

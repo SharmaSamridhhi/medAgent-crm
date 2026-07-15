@@ -1,5 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useGetHcpQuery } from '../../api/hcpsApi'
 import type { Interaction } from '../../api/types'
@@ -110,6 +111,9 @@ function LogInteractionScreen() {
 
   return (
     <div className="log-interaction-screen">
+      <div className="log-interaction-screen__toolbar">
+        <Link to="/hcps">Manage HCPs</Link>
+      </div>
       <ComplianceFlagsBanner flags={complianceFlags} />
       <div className="log-interaction-screen__panels">
         <div>

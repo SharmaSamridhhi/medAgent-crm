@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { apiSlice } from '../../api/apiSlice'
 import type { HCP, Interaction } from '../../api/types'
@@ -113,7 +114,9 @@ function renderScreen() {
 
   render(
     <Provider store={store}>
-      <LogInteractionScreen />
+      <MemoryRouter>
+        <LogInteractionScreen />
+      </MemoryRouter>
     </Provider>,
   )
 }
