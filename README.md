@@ -83,3 +83,33 @@ Lint/format:
 npm run lint
 npm run format:check
 ```
+
+## Deploying to Render
+
+`render.yaml` at the repo root is a Render Blueprint — it provisions a
+managed Postgres database, the backend as a Docker web service, and the
+frontend as a static site (built via `npm run build`, not the dev-server
+Dockerfile) in one shot.
+
+1. Push this repo to GitHub, then in the Render dashboard: **New →
+   Blueprint** → connect the repo. Render reads `render.yaml` and creates
+   all three resources.
+2. You'll be prompted for the one secret marked `sync: false`:
+   `GROQ_API_KEY`.
+3. **Two-pass step** — `CORS_ORIGINS` (backend) and `VITE_API_BASE_URL`
+   (frontend) each need the *other* service's Render URL, which doesn't
+   exist until after the first deploy:
+   - After both services deploy once, note the frontend's URL (e.g.
+     `https://medagent-crm-frontend.onrender.com`).
+   - Set the backend's `CORS_ORIGINS` env var to that URL, and the
+     frontend's `VITE_API_BASE_URL` to
+     `https://<backend-url>/api/v1`.
+   - `VITE_API_BASE_URL` is a Vite build-time variable, not a runtime one
+     — setting it triggers (and requires) a redeploy of the frontend to
+     take effect.
+4. Migrations run automatically on backend startup (same
+   `docker-entrypoint.sh` as local Docker) — no separate migration step.
+
+If your Render account doesn't have a `free` Postgres/web-service plan
+available, edit the `plan:` fields in `render.yaml` before connecting the
+blueprint.

@@ -12,6 +12,7 @@ from app.agent.tools.edit_interaction import (
     HCPNameHint,
     edit_interaction,
 )
+from app.agent.tools.flag_compliance_risks import FlagComplianceRisksOutput
 from app.core.config import DEFAULT_DEMO_REP_ID
 from app.core.db import SessionLocal
 from app.main import app
@@ -20,6 +21,18 @@ from app.models import HCP, Interaction
 client = TestClient(app)
 
 _PATCH_TARGET = "app.agent.tools.edit_interaction.extract_structured"
+
+
+@pytest.fixture(autouse=True)
+def _no_real_compliance_screening() -> Generator[None, None, None]:
+    # edit_interaction() calls update_interaction(), which re-screens
+    # topics_discussed/outcomes edits for compliance risk (MEDGENT-022) —
+    # stub it out here so these tests never hit the real Groq API.
+    with patch(
+        "app.api.v1.interactions.flag_compliance_risks",
+        return_value=FlagComplianceRisksOutput(flags=[]),
+    ):
+        yield
 
 
 @pytest.fixture

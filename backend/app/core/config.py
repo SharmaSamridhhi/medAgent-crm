@@ -1,6 +1,7 @@
 import uuid
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Fixed id of the single demo rep seeded by the Alembic migration in this
@@ -20,6 +21,16 @@ class Settings(BaseSettings):
     groq_api_key: str | None = None
     groq_model_default: str = "llama-3.1-8b-instant"
     groq_model_heavy: str = "llama-3.3-70b-versatile"
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_database_url(cls, value: str) -> str:
+        # Managed Postgres providers (e.g. Render) hand out a bare
+        # postgresql:// URL; psycopg (v3), the only driver installed here,
+        # needs it spelled out in the scheme.
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
 
     @property
     def cors_origins_list(self) -> list[str]:

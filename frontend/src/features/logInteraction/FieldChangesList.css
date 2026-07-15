@@ -1,0 +1,19 @@
+.field-changes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm);
+}
+
+.field-changes-list li {
+  padding: var(--space-1) 0;
+}
+
+.field-changes-list__old {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.field-changes-list__new {
+  color: var(--color-success);
+}

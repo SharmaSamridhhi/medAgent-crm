@@ -81,10 +81,10 @@ Assistant chat panel side by side, sharing one draft, not toggled between.
 
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
-| [MEDGENT-019](MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | MVP | To Do | MEDGENT-017 | `MEDGENT-019-structured-form-ui` |
-| [MEDGENT-020](MEDGENT-020-conversational-chat-ui.md) | AI Assistant chat panel for Log Interaction | MVP | To Do | MEDGENT-015, MEDGENT-017 | `MEDGENT-020-conversational-chat-ui` |
-| [MEDGENT-021](MEDGENT-021-chat-form-sync-review.md) | Chat-to-form sync & save/confirmation UX | MVP | To Do | MEDGENT-019, MEDGENT-020 | `MEDGENT-021-chat-form-sync-review` |
-| [MEDGENT-022](MEDGENT-022-edit-interaction-flow.md) | Edit Interaction flow *(mandatory tool's UI)* | MVP | To Do | MEDGENT-011, MEDGENT-021 | `MEDGENT-022-edit-interaction-flow` |
+| [MEDGENT-019](MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | MVP | Done | MEDGENT-017 | `MEDGENT-019-structured-form-ui` |
+| [MEDGENT-020](MEDGENT-020-conversational-chat-ui.md) | AI Assistant chat panel for Log Interaction | MVP | Done | MEDGENT-015, MEDGENT-017 | `MEDGENT-020-conversational-chat-ui` |
+| [MEDGENT-021](MEDGENT-021-chat-form-sync-review.md) | Chat-to-form sync & save/confirmation UX | MVP | Done | MEDGENT-019, MEDGENT-020 | `MEDGENT-021-chat-form-sync-review` |
+| [MEDGENT-022](MEDGENT-022-edit-interaction-flow.md) | Edit Interaction flow *(mandatory tool's UI)* | MVP | Done | MEDGENT-011, MEDGENT-021 | `MEDGENT-022-edit-interaction-flow` |
 | [MEDGENT-026](MEDGENT-026-voice-note-transcription.md) | Voice note capture & summarization | **Stretch** | To Do | MEDGENT-009, MEDGENT-019 | `MEDGENT-026-voice-note-transcription` |
 
 ## EPIC-06: Quality, Docs & Deployment
@@ -97,6 +97,17 @@ observability demoted to stretch.
 | [MEDGENT-023](MEDGENT-023-automated-test-suites.md) | Critical-path smoke tests | MVP | To Do | MEDGENT-021, MEDGENT-022 | `MEDGENT-023-automated-test-suites` |
 | [MEDGENT-025](MEDGENT-025-docs-seed-data.md) | README, architecture docs & demo seed data | MVP | To Do | MEDGENT-023 | `MEDGENT-025-docs-seed-data` |
 | [MEDGENT-024](MEDGENT-024-observability-logging.md) | Observability & logging | **Stretch** | To Do | MEDGENT-015 | `MEDGENT-024-observability-logging` |
+| [MEDGENT-028](MEDGENT-028-render-deployment.md) | Render deployment config | Dev tooling | Done | MEDGENT-002, MEDGENT-005 | bundled into `EPIC-05-log-interaction-screen` |
+
+## EPIC-07: HCP Admin Tooling
+
+Dev/tester convenience only — not part of the graded deliverable. Built
+out of the normal MVP/Stretch order at the user's explicit request to
+unblock manual testing of MEDGENT-021/022 before EPIC-06.
+
+| Spec | Title | Priority | Status | Depends on | Branch |
+|------|-------|----------|--------|------------|--------|
+| [MEDGENT-027](MEDGENT-027-hcp-admin-screen.md) | HCP admin screen (list + create) | Dev tooling | Done | MEDGENT-017 | bundled into `EPIC-05-log-interaction-screen` |
 
 ## MVP build order (the actual path to submission)
 

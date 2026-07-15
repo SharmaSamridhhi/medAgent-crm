@@ -1,0 +1,52 @@
+# Render Blueprint — provisions the whole stack (Postgres + backend web
+# service + frontend static site) from one file. Connect this repo at
+# https://dashboard.render.com/blueprints and Render reads this file.
+#
+# Two values can't be known until after the first deploy (each service's
+# Render-assigned URL) — CORS_ORIGINS and VITE_API_BASE_URL below are left
+# blank (sync: false) on purpose. See README.md's "Deploying to Render"
+# section for the two-pass setup this requires.
+
+databases:
+  - name: medagent-crm-db
+    databaseName: medagent_crm
+    user: medagent
+    plan: free
+
+services:
+  - type: web
+    name: medagent-crm-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: medagent-crm-db
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL_DEFAULT
+        value: llama-3.1-8b-instant
+      - key: GROQ_MODEL_HEAVY
+        value: llama-3.3-70b-versatile
+      - key: DEFAULT_REP_ID
+        value: 00000000-0000-0000-0000-000000000001
+      - key: CORS_ORIGINS
+        sync: false # set to the frontend's Render URL after its first deploy
+
+  - type: web
+    name: medagent-crm-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false # set to https://<medagent-crm-backend-url>/api/v1, then redeploy
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

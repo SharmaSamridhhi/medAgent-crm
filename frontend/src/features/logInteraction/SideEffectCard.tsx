@@ -1,0 +1,127 @@
+import type { ToolSideEffect } from '../../api/types'
+import ComplianceFlagsBanner from './ComplianceFlagsBanner'
+import FieldChangesList from './FieldChangesList'
+import './SideEffectCard.css'
+
+interface SideEffectCardProps {
+  effect: ToolSideEffect
+  onSuggestedFollowUpClick?: (suggestion: string) => void
+}
+
+function SideEffectCard({
+  effect,
+  onSuggestedFollowUpClick,
+}: SideEffectCardProps) {
+  if (effect.tool === 'log_interaction') {
+    const output = effect.output
+    if (output.status === 'needs_clarification') {
+      return null
+    }
+    return (
+      <div className="side-effect-card side-effect-card--log">
+        <p className="side-effect-card__title">✓ Interaction logged</p>
+        <dl className="side-effect-card__fields">
+          {output.interaction_type && (
+            <>
+              <dt>Type</dt>
+              <dd>{output.interaction_type}</dd>
+            </>
+          )}
+          {output.sentiment && (
+            <>
+              <dt>Sentiment</dt>
+              <dd>{output.sentiment}</dd>
+            </>
+          )}
+          {output.topics_discussed && (
+            <>
+              <dt>Topics</dt>
+              <dd>{output.topics_discussed}</dd>
+            </>
+          )}
+          {output.outcomes && (
+            <>
+              <dt>Outcomes</dt>
+              <dd>{output.outcomes}</dd>
+            </>
+          )}
+        </dl>
+        {output.suggested_follow_ups.length > 0 && (
+          <div className="side-effect-card__suggestions">
+            <p className="side-effect-card__suggestions-title">
+              Suggested follow-ups
+            </p>
+            <ul>
+              {output.suggested_follow_ups.map((suggestion) => (
+                <li key={suggestion}>
+                  <button
+                    type="button"
+                    onClick={() => onSuggestedFollowUpClick?.(suggestion)}
+                  >
+                    + {suggestion}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <ComplianceFlagsBanner flags={output.compliance_flags} />
+      </div>
+    )
+  }
+
+  if (effect.tool === 'edit_interaction') {
+    const output = effect.output
+    if (
+      output.status === 'needs_clarification' ||
+      output.changes.length === 0
+    ) {
+      return null
+    }
+    return (
+      <div className="side-effect-card side-effect-card--edit">
+        <p className="side-effect-card__title">✓ Interaction updated</p>
+        <FieldChangesList changes={output.changes} />
+      </div>
+    )
+  }
+
+  if (effect.tool === 'retrieve_hcp_history') {
+    const output = effect.output
+    if (output.status === 'needs_clarification') {
+      return null
+    }
+    return (
+      <div className="side-effect-card side-effect-card--history">
+        <p className="side-effect-card__title">
+          HCP history — {output.hcp_name}
+        </p>
+        {output.summary && <p>{output.summary}</p>}
+      </div>
+    )
+  }
+
+  if (effect.tool === 'schedule_follow_up') {
+    const output = effect.output
+    if (output.status === 'needs_clarification') {
+      return null
+    }
+    return (
+      <div className="side-effect-card side-effect-card--follow-up">
+        <p className="side-effect-card__title">
+          ✓ Follow-up scheduled
+          {output.due_date ? ` for ${output.due_date}` : ''}
+        </p>
+        {output.note && <p>{output.note}</p>}
+      </div>
+    )
+  }
+
+  if (effect.tool === 'flag_compliance_risks') {
+    return <ComplianceFlagsBanner flags={effect.output.flags} />
+  }
+
+  return null
+}
+
+export default SideEffectCard

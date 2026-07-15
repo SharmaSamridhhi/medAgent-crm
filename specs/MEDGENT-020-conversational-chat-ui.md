@@ -1,6 +1,6 @@
 # MEDGENT-020: AI Assistant chat panel for Log Interaction
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-05: Log Interaction Screen](epics/EPIC-05-log-interaction-screen.md)
 **Branch:** `MEDGENT-020-conversational-chat-ui`
@@ -25,28 +25,28 @@ panel itself; MEDGENT-021 wires its output into the form panel
 
 ## Acceptance criteria
 
-- [ ] Chat UI: message list (rep + agent turns), input box, send/"Log"
+- [x] Chat UI: message list (rep + agent turns), input box, send/"Log"
       action — matching the mockup's layout (chat above, input + Log
       button pinned at the bottom of the panel).
-- [ ] The currently-selected HCP (from MEDGENT-019's picker, if one is
+- [x] The currently-selected HCP (from MEDGENT-019's picker, if one is
       selected) is passed along as context so the rep doesn't have to
       restate who they're talking about; if no HCP is selected yet, the
       agent can resolve one from the rep's message instead (per
       MEDGENT-010).
-- [ ] Calls `POST /api/v1/agent/chat` (MEDGENT-015) and renders the agent's
+- [x] Calls `POST /api/v1/agent/chat` (MEDGENT-015) and renders the agent's
       reply, including structured side effects it returns: extracted
       fields (handed to MEDGENT-021 to populate the form panel), suggested
       follow-ups (rendered as the mockup's clickable chips), and any
       compliance flags from MEDGENT-014 (shown distinctly, e.g. a
       warning-styled inline note).
-- [ ] Conversation/session id is preserved across turns within the screen
+- [x] Conversation/session id is preserved across turns within the screen
       so multi-turn flows (clarification questions from MEDGENT-010/011)
       work.
-- [ ] Loading state while awaiting the agent's response (typing indicator
+- [x] Loading state while awaiting the agent's response (typing indicator
       or similar).
-- [ ] Error state if the agent call fails, without losing the rep's typed
+- [x] Error state if the agent call fails, without losing the rep's typed
       message.
-- [ ] Render/interaction tests: send message → see reply + form-panel
+- [x] Render/interaction tests: send message → see reply + form-panel
       side effect, clarification round-trip, suggested-follow-up chip
       click, error state.
 
@@ -67,3 +67,15 @@ panel itself; MEDGENT-021 wires its output into the form panel
   chat's extraction pre-fills the form for review before saving, or saves
   immediately with an editable confirmation, is MEDGENT-021's call to make
   and document.
+
+**Implementation note (as built):** `POST /api/v1/agent/chat`
+(`ChatRequest`) has no dedicated field for the active HCP — only
+`message`/`session_id`. The active-HCP context required by this spec's
+second acceptance criterion is passed in-band instead: on the first turn
+of a new session only, `useAgentChat` prefixes the *outgoing* API message
+with `[Context: the rep currently has HCP "<name>" (id: <id>) selected in
+the form.]`, while the chat transcript still displays the rep's original,
+unprefixed text. No backend change was made or needed — the agent already
+resolves HCPs mentioned in conversation text. MEDGENT-022 should reuse the
+same in-band pattern if it needs to scope `edit_interaction` to a specific
+`interaction_id`.
