@@ -71,7 +71,7 @@ Log Interaction Screen), with the HCP picker inline on that screen.
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
 | [MEDGENT-016](MEDGENT-016-react-redux-scaffold.md) | React + Redux app scaffold | MVP | Done | MEDGENT-001 | `MEDGENT-016-react-redux-scaffold` |
-| [MEDGENT-017](MEDGENT-017-api-client-redux-slices.md) | API client & Redux slices for HCP/Interaction | MVP | To Do | MEDGENT-006, MEDGENT-007, MEDGENT-016 | `MEDGENT-017-api-client-redux-slices` |
+| [MEDGENT-017](MEDGENT-017-api-client-redux-slices.md) | API client & Redux slices for HCP/Interaction | MVP | Done | MEDGENT-006, MEDGENT-007, MEDGENT-016 | `MEDGENT-017-api-client-redux-slices` |
 
 ## EPIC-05: Log Interaction Screen
 
