@@ -1,11 +1,13 @@
+import { Provider } from 'react-redux'
+import { RouterProvider } from 'react-router-dom'
+import { store } from './app/store'
+import { router } from './app/router'
+
 function App() {
   return (
-    <main>
-      <h1>medAgent-CRM</h1>
-      <p>
-        Frontend scaffold is up. The Log Interaction Screen lands in EPIC-05.
-      </p>
-    </main>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   )
 }
 

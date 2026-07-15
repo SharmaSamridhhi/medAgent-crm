@@ -1,12 +1,16 @@
+@import './styles/theme.css';
+
 :root {
   color-scheme: light dark;
-  font:
-    16px/1.5 system-ui,
-    sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
 }
 
 body {
   margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 #root {

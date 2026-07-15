@@ -1,6 +1,6 @@
 # MEDGENT-017: API client & Redux slices for HCP/Interaction
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-04: Frontend Core](epics/EPIC-04-frontend-core.md)
 **Branch:** `MEDGENT-017-api-client-redux-slices`
@@ -22,17 +22,17 @@ rather than being hand-rolled per component.
 
 ## Acceptance criteria
 
-- [ ] RTK Query API slice(s) for HCPs (list, get, create, update, delete)
+- [x] RTK Query API slice(s) for HCPs (list, get, create, update, delete)
       and Interactions (list, get, create, update, delete), typed against
       the backend's Pydantic schemas (mirrored as TS types).
-- [ ] Base query points at `VITE_API_BASE_URL` — no auth header needed
+- [x] Base query points at `VITE_API_BASE_URL` — no auth header needed
       since the backend is single-rep with no auth system in this build
       (see `steering/04-architecture-tech-stack.md`).
-- [ ] Loading and error states are exposed via the generated RTK Query
+- [x] Loading and error states are exposed via the generated RTK Query
       hooks (no separate hand-written thunks duplicating this).
-- [ ] A dev-only `.env` var for the API base URL (`VITE_API_BASE_URL`),
+- [x] A dev-only `.env` var for the API base URL (`VITE_API_BASE_URL`),
       documented in `.env.example`.
-- [ ] Tests: slice/endpoint configuration is covered by at least a mocked
+- [x] Tests: slice/endpoint configuration is covered by at least a mocked
       request/response test (e.g. via `msw` or RTK Query's built-in test
       utocols) confirming a create + list round-trip.
 
