@@ -1,6 +1,6 @@
 # EPIC-05: Log Interaction Screen
 
-**Status:** To Do
+**Status:** Done (MVP specs 019–022; MEDGENT-026 is Stretch and deferred per `specs/README.md`)
 
 ## Goal
 
