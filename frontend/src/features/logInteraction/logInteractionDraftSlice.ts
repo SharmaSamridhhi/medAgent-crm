@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type {
   ComplianceFlag,
+  EditInteractionOutput,
   InteractionSource,
   LogInteractionOutput,
 } from '../../api/types'
@@ -8,6 +9,10 @@ import { createEmptyDraft, type InteractionDraft } from './draft'
 
 export interface LogInteractionDraftState {
   draft: InteractionDraft
+  // Snapshot of the draft as last known to be saved server-side — the
+  // "before" half of the before/after edit confirmation (MEDGENT-022).
+  // null until something has actually been saved/loaded this session.
+  originalDraft: InteractionDraft | null
   interactionId: string | null
   source: InteractionSource
   suggestedFollowUps: string[]
@@ -17,6 +22,7 @@ export interface LogInteractionDraftState {
 function initialState(): LogInteractionDraftState {
   return {
     draft: createEmptyDraft(),
+    originalDraft: null,
     interactionId: null,
     source: 'form',
     suggestedFollowUps: [],
@@ -75,6 +81,29 @@ const logInteractionDraftSlice = createSlice({
       state.source = 'chat'
       state.suggestedFollowUps = output.suggested_follow_ups
       state.complianceFlags = output.compliance_flags
+      state.originalDraft = state.draft
+    },
+    chatEditInteractionApplied(
+      state,
+      action: PayloadAction<EditInteractionOutput>,
+    ) {
+      const output = action.payload
+      if (output.status !== 'updated' || output.changes.length === 0) {
+        return
+      }
+      state.originalDraft = state.draft
+      // FieldChange.field is one of edit_interaction's `_EDITABLE_FIELDS`
+      // on the backend, which is exactly InteractionDraft's own field
+      // names (see MEDGENT-019's technical details) — safe to index by.
+      const nextDraft: Record<string, unknown> = { ...state.draft }
+      for (const change of output.changes) {
+        nextDraft[change.field] = change.new_value
+      }
+      state.draft = nextDraft as unknown as InteractionDraft
+      if (output.interaction_id) {
+        state.interactionId = output.interaction_id
+      }
+      state.source = 'chat'
     },
     draftLoaded(
       state,
@@ -86,10 +115,19 @@ const logInteractionDraftSlice = createSlice({
       }>,
     ) {
       state.draft = action.payload.draft
+      state.originalDraft = action.payload.draft
       state.interactionId = action.payload.interactionId
       state.source = action.payload.source
       state.suggestedFollowUps = []
       state.complianceFlags = action.payload.complianceFlags ?? []
+    },
+    // After a direct-form update (not a fresh create), the draft stays on
+    // screen — re-baseline it against what was just saved and refresh
+    // compliance flags so a materially-edited note's re-screening result
+    // (MEDGENT-022) is visible, identically to the chat path.
+    draftSavedAsUpdate(state, action: PayloadAction<ComplianceFlag[]>) {
+      state.originalDraft = state.draft
+      state.complianceFlags = action.payload
     },
     draftReset() {
       return initialState()
@@ -102,7 +140,9 @@ export const {
   hcpContextResolved,
   hcpNameResolved,
   chatLogInteractionApplied,
+  chatEditInteractionApplied,
   draftLoaded,
+  draftSavedAsUpdate,
   draftReset,
 } = logInteractionDraftSlice.actions
 

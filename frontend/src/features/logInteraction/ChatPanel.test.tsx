@@ -48,7 +48,7 @@ function renderChatPanel() {
   })
 
   function Harness() {
-    const chat = useAgentChat(activeHcp)
+    const chat = useAgentChat({ hcp: activeHcp })
     return <ChatPanel chat={chat} />
   }
 

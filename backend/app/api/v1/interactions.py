@@ -5,6 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.agent.tools.flag_compliance_risks import (
+    FlagComplianceRisksInput,
+    flag_compliance_risks,
+)
 from app.core.db import get_db
 from app.core.dependencies import get_current_rep
 from app.models import HCP, Interaction, Rep
@@ -13,6 +17,10 @@ from app.schemas.interaction import (
     InteractionRead,
     InteractionUpdate,
 )
+
+# Fields whose edit can introduce a new compliance risk (off-label claims,
+# unsubstantiated claims, adverse-event mentions) — see MEDGENT-022.
+_COMPLIANCE_SCREENED_FIELDS = ("topics_discussed", "outcomes")
 
 router = APIRouter(prefix="/interactions", tags=["interactions"])
 
@@ -88,6 +96,24 @@ def update_interaction(
         _require_active_hcp(db, updates["hcp_id"])
     for field, value in updates.items():
         setattr(interaction, field, value)
+
+    # Editing the notes can introduce a new compliance risk that wasn't
+    # present (or wasn't screened) at creation time — re-screen unless the
+    # caller is explicitly setting compliance_flags itself in this same
+    # request (e.g. log_interaction's own post-create flagging call).
+    if (
+        any(field in updates for field in _COMPLIANCE_SCREENED_FIELDS)
+        and "compliance_flags" not in updates
+    ):
+        screen_text = " ".join(
+            part
+            for part in (interaction.topics_discussed, interaction.outcomes)
+            if part
+        )
+        flags = flag_compliance_risks(FlagComplianceRisksInput(text=screen_text)).flags
+        interaction.compliance_flags = [flag.model_dump(mode="json") for flag in flags]
+        interaction.has_compliance_flags = bool(flags)
+
     db.commit()
     db.refresh(interaction)
     return interaction

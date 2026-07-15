@@ -14,6 +14,14 @@ export interface ActiveHcp {
   name: string
 }
 
+export interface ChatContext {
+  hcp?: ActiveHcp | null
+  // Set while editing an already-saved interaction (MEDGENT-022) so the
+  // agent's edit_interaction tool can resolve it without the rep having
+  // to restate which one they mean.
+  interactionId?: string | null
+}
+
 export interface UseAgentChatResult {
   messages: ChatMessage[]
   isLoading: boolean
@@ -28,7 +36,7 @@ function nextMessageId(): string {
   return `msg-${messageIdCounter}`
 }
 
-export function useAgentChat(activeHcp: ActiveHcp | null): UseAgentChatResult {
+export function useAgentChat(context: ChatContext | null): UseAgentChatResult {
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -46,12 +54,24 @@ export function useAgentChat(activeHcp: ActiveHcp | null): UseAgentChatResult {
       { id: nextMessageId(), role: 'rep', text: trimmed },
     ])
 
-    // The chat endpoint has no dedicated "active HCP" field, so context is
-    // passed in-band on the first turn of a session — the displayed
-    // message stays clean, only the outgoing payload is augmented.
+    // The chat endpoint has no dedicated fields for active HCP/interaction
+    // context, so it's passed in-band on the first turn of a session only
+    // — the displayed message stays clean, only the outgoing payload is
+    // augmented (see MEDGENT-020's and MEDGENT-022's implementation notes).
+    const contextParts: string[] = []
+    if (context?.hcp) {
+      contextParts.push(
+        `HCP "${context.hcp.name}" (id: ${context.hcp.id}) is selected in the form`,
+      )
+    }
+    if (context?.interactionId) {
+      contextParts.push(
+        `the rep is editing an already-logged interaction with id ${context.interactionId}`,
+      )
+    }
     const outgoingMessage =
-      !sessionId && activeHcp
-        ? `[Context: the rep currently has HCP "${activeHcp.name}" (id: ${activeHcp.id}) selected in the form.] ${trimmed}`
+      !sessionId && contextParts.length > 0
+        ? `[Context: ${contextParts.join('; ')}.] ${trimmed}`
         : trimmed
 
     try {

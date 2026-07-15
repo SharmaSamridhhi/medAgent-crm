@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
@@ -174,7 +174,12 @@ describe('LogInteractionScreen', () => {
     const saveButton = screen.getByRole('button', { name: /save changes/i })
     await user.click(saveButton)
 
-    expect(await screen.findByText(/interaction saved/i)).toBeInTheDocument()
+    const confirmation = (
+      await screen.findByText(/here's what changed/i)
+    ).closest('[role="status"]') as HTMLElement
+    expect(
+      within(confirmation).getByText(/agreed to a follow-up call/i),
+    ).toBeInTheDocument()
   })
 
   it('reflects a form HCP selection as chat context on the first turn', async () => {

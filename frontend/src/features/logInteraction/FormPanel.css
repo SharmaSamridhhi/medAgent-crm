@@ -118,6 +118,14 @@
   margin-bottom: var(--space-3);
 }
 
+.form-panel__banner-title {
+  margin: 0 0 var(--space-1);
+}
+
+.form-panel__banner-title:last-child {
+  margin-bottom: 0;
+}
+
 .form-panel__banner--error {
   background: color-mix(in srgb, var(--color-danger) 12%, transparent);
   color: var(--color-danger);

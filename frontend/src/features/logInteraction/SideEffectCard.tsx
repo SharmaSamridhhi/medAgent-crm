@@ -1,5 +1,6 @@
 import type { ToolSideEffect } from '../../api/types'
 import ComplianceFlagsBanner from './ComplianceFlagsBanner'
+import FieldChangesList from './FieldChangesList'
 import './SideEffectCard.css'
 
 interface SideEffectCardProps {
@@ -80,20 +81,7 @@ function SideEffectCard({
     return (
       <div className="side-effect-card side-effect-card--edit">
         <p className="side-effect-card__title">✓ Interaction updated</p>
-        <ul className="side-effect-card__changes">
-          {output.changes.map((change) => (
-            <li key={change.field}>
-              <strong>{change.field.replace(/_/g, ' ')}:</strong>{' '}
-              <span className="side-effect-card__old-value">
-                {JSON.stringify(change.old_value)}
-              </span>{' '}
-              →{' '}
-              <span className="side-effect-card__new-value">
-                {JSON.stringify(change.new_value)}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <FieldChangesList changes={output.changes} />
       </div>
     )
   }

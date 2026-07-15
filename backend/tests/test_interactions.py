@@ -1,14 +1,17 @@
 import uuid
 from collections.abc import Generator
 from typing import Any
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
+from app.agent.tools.flag_compliance_risks import FlagComplianceRisksOutput
 from app.core.db import SessionLocal
 from app.main import app
 from app.models import HCP, Interaction
+from app.schemas.interaction import ComplianceFlag
 
 client = TestClient(app)
 
@@ -115,15 +118,64 @@ def test_get_not_found() -> None:
 def test_update_interaction(interaction_factory: Any) -> None:
     created = interaction_factory()
 
-    response = client.patch(
-        f"/api/v1/interactions/{created['id']}",
-        json={"outcomes": "Rescheduled for next week", "sentiment": "neutral"},
-    )
+    with patch(
+        "app.api.v1.interactions.flag_compliance_risks",
+        return_value=FlagComplianceRisksOutput(flags=[]),
+    ):
+        response = client.patch(
+            f"/api/v1/interactions/{created['id']}",
+            json={"outcomes": "Rescheduled for next week", "sentiment": "neutral"},
+        )
 
     assert response.status_code == 200
     body = response.json()
     assert body["outcomes"] == "Rescheduled for next week"
     assert body["sentiment"] == "neutral"
+
+
+def test_update_interaction_re_screens_compliance_on_note_edit(
+    interaction_factory: Any,
+) -> None:
+    created = interaction_factory(topics_discussed="Discussed CardioX dosing")
+    assert created["has_compliance_flags"] is False
+
+    flag = ComplianceFlag(
+        category="off_label_claim",
+        excerpt="cures everything",
+        rationale="Discusses an unapproved indication.",
+    )
+    with patch(
+        "app.api.v1.interactions.flag_compliance_risks",
+        return_value=FlagComplianceRisksOutput(flags=[flag]),
+    ) as mocked_flag_check:
+        response = client.patch(
+            f"/api/v1/interactions/{created['id']}",
+            json={"topics_discussed": "Said CardioX cures everything"},
+        )
+
+    mocked_flag_check.assert_called_once()
+    assert response.status_code == 200
+    body = response.json()
+    assert body["has_compliance_flags"] is True
+    assert body["compliance_flags"] == [flag.model_dump(mode="json")]
+
+
+def test_update_interaction_without_note_changes_skips_compliance_check(
+    interaction_factory: Any,
+) -> None:
+    created = interaction_factory()
+
+    with patch(
+        "app.api.v1.interactions.flag_compliance_risks",
+    ) as mocked_flag_check:
+        response = client.patch(
+            f"/api/v1/interactions/{created['id']}",
+            json={"sentiment": "positive"},
+        )
+
+    mocked_flag_check.assert_not_called()
+    assert response.status_code == 200
+    assert response.json()["sentiment"] == "positive"
 
 
 def test_update_not_found() -> None:

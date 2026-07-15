@@ -4,14 +4,16 @@ import {
   useCreateInteractionMutation,
   useUpdateInteractionMutation,
 } from '../../api/interactionsApi'
-import type { HCP, Interaction, Sentiment } from '../../api/types'
+import type { FieldChange, HCP, Interaction, Sentiment } from '../../api/types'
 import {
+  diffDraftFields,
   INTERACTION_TYPES,
   occurredAtFromDraft,
   validateDraft,
   type DraftValidationErrors,
   type InteractionDraft,
 } from './draft'
+import FieldChangesList from './FieldChangesList'
 import HcpTypeahead from './HcpTypeahead'
 import MultiValueInput from './MultiValueInput'
 import './FormPanel.css'
@@ -26,6 +28,9 @@ interface FormPanelProps {
   // this interaction server-side (see MEDGENT-021) — submitting then
   // updates that same row instead of creating a duplicate.
   interactionId?: string | null
+  // The draft as last known to be saved — diffed against `value` on a
+  // successful update to render a before/after confirmation (MEDGENT-022).
+  originalSnapshot?: InteractionDraft | null
 }
 
 const SENTIMENT_OPTIONS: { value: Sentiment; label: string }[] = [
@@ -41,6 +46,7 @@ function FormPanel({
   onSuggestedFollowUpClick,
   onSaved,
   interactionId = null,
+  originalSnapshot = null,
 }: FormPanelProps) {
   const [createInteraction, { isLoading: isCreating }] =
     useCreateInteractionMutation()
@@ -54,6 +60,7 @@ function FormPanel({
   const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(
     null,
   )
+  const [savedChanges, setSavedChanges] = useState<FieldChange[]>([])
 
   function updateField<K extends keyof InteractionDraft>(
     key: K,
@@ -95,6 +102,11 @@ function FormPanel({
       const saved = interactionId
         ? await updateInteraction({ id: interactionId, body: fields }).unwrap()
         : await createInteraction({ ...fields, source: 'form' }).unwrap()
+      setSavedChanges(
+        interactionId && originalSnapshot
+          ? diffDraftFields(originalSnapshot, value)
+          : [],
+      )
       setSubmitState('success')
       onSaved?.(saved)
     } catch {
@@ -282,12 +294,21 @@ function FormPanel({
         </p>
       )}
       {submitState === 'success' && (
-        <p
+        <div
           role="status"
           className="form-panel__banner form-panel__banner--success"
         >
-          Interaction saved.
-        </p>
+          {savedChanges.length > 0 ? (
+            <>
+              <p className="form-panel__banner-title">
+                Interaction updated — here's what changed:
+              </p>
+              <FieldChangesList changes={savedChanges} />
+            </>
+          ) : (
+            <p className="form-panel__banner-title">Interaction saved.</p>
+          )}
+        </div>
       )}
 
       <button type="submit" className="form-panel__submit" disabled={isLoading}>

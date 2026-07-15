@@ -2,16 +2,22 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useGetHcpQuery } from '../../api/hcpsApi'
+import type { Interaction } from '../../api/types'
 import ChatPanel from './ChatPanel'
 import ComplianceFlagsBanner from './ComplianceFlagsBanner'
+import { draftFromInteraction } from './draft'
 import FormPanel from './FormPanel'
 import {
+  chatEditInteractionApplied,
   chatLogInteractionApplied,
   draftChanged,
+  draftLoaded,
   draftReset,
+  draftSavedAsUpdate,
   hcpContextResolved,
   hcpNameResolved,
 } from './logInteractionDraftSlice'
+import RecentInteractionsList from './RecentInteractionsList'
 import { useAgentChat } from './useAgentChat'
 import './LogInteractionScreen.css'
 
@@ -24,7 +30,7 @@ function LogInteractionScreen() {
   const activeHcp = draft.hcp_id
     ? { id: draft.hcp_id, name: draft.hcp_name }
     : null
-  const chat = useAgentChat(activeHcp)
+  const chat = useAgentChat({ hcp: activeHcp, interactionId })
 
   const appliedSideEffectIds = useRef(new Set<string>())
   useEffect(() => {
@@ -44,6 +50,12 @@ function LogInteractionScreen() {
           effect.output.status === 'created'
         ) {
           dispatch(chatLogInteractionApplied(effect.output))
+        }
+        if (
+          effect.tool === 'edit_interaction' &&
+          effect.output.status === 'updated'
+        ) {
+          dispatch(chatEditInteractionApplied(effect.output))
         }
         if (
           effect.tool === 'retrieve_hcp_history' &&
@@ -77,18 +89,44 @@ function LogInteractionScreen() {
     void chat.sendMessage(suggestion)
   }
 
+  function handleSaved(saved: Interaction) {
+    if (interactionId) {
+      dispatch(draftSavedAsUpdate(saved.compliance_flags))
+    } else {
+      dispatch(draftReset())
+    }
+  }
+
+  function handleEditInteraction(interaction: Interaction) {
+    dispatch(
+      draftLoaded({
+        draft: draftFromInteraction(interaction),
+        interactionId: interaction.id,
+        source: interaction.source,
+        complianceFlags: interaction.compliance_flags,
+      }),
+    )
+  }
+
   return (
     <div className="log-interaction-screen">
       <ComplianceFlagsBanner flags={complianceFlags} />
       <div className="log-interaction-screen__panels">
-        <FormPanel
-          value={draft}
-          onChange={(next) => dispatch(draftChanged(next))}
-          interactionId={interactionId}
-          suggestedFollowUps={suggestedFollowUps}
-          onSuggestedFollowUpClick={handleSuggestedFollowUpClick}
-          onSaved={() => dispatch(draftReset())}
-        />
+        <div>
+          <FormPanel
+            value={draft}
+            onChange={(next) => dispatch(draftChanged(next))}
+            interactionId={interactionId}
+            originalSnapshot={draftState.originalDraft}
+            suggestedFollowUps={suggestedFollowUps}
+            onSuggestedFollowUpClick={handleSuggestedFollowUpClick}
+            onSaved={handleSaved}
+          />
+          <RecentInteractionsList
+            hcpId={draft.hcp_id}
+            onEdit={handleEditInteraction}
+          />
+        </div>
         <ChatPanel
           chat={chat}
           onSuggestedFollowUpClick={handleSuggestedFollowUpClick}
