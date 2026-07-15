@@ -1,6 +1,6 @@
 # MEDGENT-016: React + Redux app scaffold
 
-**Status:** To Do
+**Status:** Done
 **Priority:** MVP — required for the 36-hour submission
 **Epic:** [EPIC-04: Frontend Core](epics/EPIC-04-frontend-core.md)
 **Branch:** `MEDGENT-016-react-redux-scaffold`
@@ -20,17 +20,17 @@ whole app will use — no product screens yet, just the shell.
 
 ## Acceptance criteria
 
-- [ ] Redux Toolkit store configured (`configureStore`) with a `store.ts`
+- [x] Redux Toolkit store configured (`configureStore`) with a `store.ts`
       and typed hooks (`useAppDispatch`, `useAppSelector`).
-- [ ] React Router set up with at least a placeholder home route and a
+- [x] React Router set up with at least a placeholder home route and a
       not-found route.
-- [ ] Google Inter loaded once at the app root (self-hosted `@font-face` or
+- [x] Google Inter loaded once at the app root (self-hosted `@font-face` or
       Google Fonts link — pick one and document it) and set as the default
       font in a base stylesheet/theme.
-- [ ] A minimal design-tokens file (colors, spacing, font sizes) exists so
+- [x] A minimal design-tokens file (colors, spacing, font sizes) exists so
       later screens don't hardcode raw values inline.
-- [ ] ESLint/Prettier from MEDGENT-001 still pass clean.
-- [ ] A render test confirms the app shell mounts without error.
+- [x] ESLint/Prettier from MEDGENT-001 still pass clean.
+- [x] A render test confirms the app shell mounts without error.
 
 ## Technical details
 

@@ -15,7 +15,7 @@ screen per the reference mockup (`docs/med-agent-crm.pdf`).
 
 | Spec | Title | Status |
 |------|-------|--------|
-| [MEDGENT-016](../MEDGENT-016-react-redux-scaffold.md) | React + Redux app scaffold | To Do |
+| [MEDGENT-016](../MEDGENT-016-react-redux-scaffold.md) | React + Redux app scaffold | Done |
 | [MEDGENT-017](../MEDGENT-017-api-client-redux-slices.md) | API client & Redux slices for HCP/Interaction | To Do |
 
 ## Notes
