@@ -6,7 +6,7 @@ describe('App', () => {
   it('mounts the app shell without error', () => {
     render(<App />)
     expect(
-      screen.getByRole('heading', { name: /medAgent-CRM/i }),
+      screen.getByRole('heading', { name: /interaction details/i }),
     ).toBeInTheDocument()
   })
 })

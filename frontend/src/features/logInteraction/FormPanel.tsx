@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useCreateInteractionMutation } from '../../api/interactionsApi'
+import {
+  useCreateInteractionMutation,
+  useUpdateInteractionMutation,
+} from '../../api/interactionsApi'
 import type { HCP, Interaction, Sentiment } from '../../api/types'
 import {
   INTERACTION_TYPES,
@@ -19,6 +22,10 @@ interface FormPanelProps {
   suggestedFollowUps?: string[]
   onSuggestedFollowUpClick?: (suggestion: string) => void
   onSaved?: (interaction: Interaction) => void
+  // Set once the chat panel's log_interaction tool has already created
+  // this interaction server-side (see MEDGENT-021) — submitting then
+  // updates that same row instead of creating a duplicate.
+  interactionId?: string | null
 }
 
 const SENTIMENT_OPTIONS: { value: Sentiment; label: string }[] = [
@@ -33,8 +40,13 @@ function FormPanel({
   suggestedFollowUps = [],
   onSuggestedFollowUpClick,
   onSaved,
+  interactionId = null,
 }: FormPanelProps) {
-  const [createInteraction, { isLoading }] = useCreateInteractionMutation()
+  const [createInteraction, { isLoading: isCreating }] =
+    useCreateInteractionMutation()
+  const [updateInteraction, { isLoading: isUpdating }] =
+    useUpdateInteractionMutation()
+  const isLoading = isCreating || isUpdating
   const [errors, setErrors] = useState<DraftValidationErrors>({})
   const [submitState, setSubmitState] = useState<'idle' | 'success' | 'error'>(
     'idle',
@@ -67,22 +79,24 @@ function FormPanel({
     }
 
     setSubmitErrorMessage(null)
+    const fields = {
+      hcp_id: value.hcp_id as string,
+      interaction_type: value.interaction_type,
+      occurred_at: occurredAtFromDraft(value),
+      attendees: value.attendees,
+      topics_discussed: value.topics_discussed || null,
+      materials_shared: value.materials_shared,
+      samples_distributed: value.samples_distributed,
+      sentiment: value.sentiment,
+      outcomes: value.outcomes || null,
+      follow_up_notes: value.follow_up_notes || null,
+    }
     try {
-      const created = await createInteraction({
-        hcp_id: value.hcp_id as string,
-        interaction_type: value.interaction_type,
-        occurred_at: occurredAtFromDraft(value),
-        attendees: value.attendees,
-        topics_discussed: value.topics_discussed || null,
-        materials_shared: value.materials_shared,
-        samples_distributed: value.samples_distributed,
-        sentiment: value.sentiment,
-        outcomes: value.outcomes || null,
-        follow_up_notes: value.follow_up_notes || null,
-        source: 'form',
-      }).unwrap()
+      const saved = interactionId
+        ? await updateInteraction({ id: interactionId, body: fields }).unwrap()
+        : await createInteraction({ ...fields, source: 'form' }).unwrap()
       setSubmitState('success')
-      onSaved?.(created)
+      onSaved?.(saved)
     } catch {
       setSubmitState('error')
       setSubmitErrorMessage(
@@ -277,7 +291,11 @@ function FormPanel({
       )}
 
       <button type="submit" className="form-panel__submit" disabled={isLoading}>
-        {isLoading ? 'Saving…' : 'Log Interaction'}
+        {isLoading
+          ? 'Saving…'
+          : interactionId
+            ? 'Save Changes'
+            : 'Log Interaction'}
       </button>
     </form>
   )

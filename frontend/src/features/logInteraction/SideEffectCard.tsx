@@ -1,28 +1,10 @@
-import type { ComplianceFlag, ToolSideEffect } from '../../api/types'
+import type { ToolSideEffect } from '../../api/types'
+import ComplianceFlagsBanner from './ComplianceFlagsBanner'
 import './SideEffectCard.css'
 
 interface SideEffectCardProps {
   effect: ToolSideEffect
   onSuggestedFollowUpClick?: (suggestion: string) => void
-}
-
-function ComplianceFlags({ flags }: { flags: ComplianceFlag[] }) {
-  if (flags.length === 0) {
-    return null
-  }
-  return (
-    <div className="side-effect-card__flags" role="alert">
-      <p className="side-effect-card__flags-title">⚠ Compliance flags</p>
-      <ul>
-        {flags.map((flag) => (
-          <li key={`${flag.category}-${flag.excerpt}`}>
-            <strong>{flag.category.replace(/_/g, ' ')}:</strong> "{flag.excerpt}
-            " — {flag.rationale}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
 }
 
 function SideEffectCard({
@@ -82,7 +64,7 @@ function SideEffectCard({
             </ul>
           </div>
         )}
-        <ComplianceFlags flags={output.compliance_flags} />
+        <ComplianceFlagsBanner flags={output.compliance_flags} />
       </div>
     )
   }
@@ -148,7 +130,7 @@ function SideEffectCard({
   }
 
   if (effect.tool === 'flag_compliance_risks') {
-    return <ComplianceFlags flags={effect.output.flags} />
+    return <ComplianceFlagsBanner flags={effect.output.flags} />
   }
 
   return null
