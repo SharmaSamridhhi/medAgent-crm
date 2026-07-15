@@ -81,7 +81,7 @@ Assistant chat panel side by side, sharing one draft, not toggled between.
 
 | Spec | Title | Priority | Status | Depends on | Branch |
 |------|-------|----------|--------|------------|--------|
-| [MEDGENT-019](MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | MVP | To Do | MEDGENT-017 | `MEDGENT-019-structured-form-ui` |
+| [MEDGENT-019](MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | MVP | Done | MEDGENT-017 | `MEDGENT-019-structured-form-ui` |
 | [MEDGENT-020](MEDGENT-020-conversational-chat-ui.md) | AI Assistant chat panel for Log Interaction | MVP | To Do | MEDGENT-015, MEDGENT-017 | `MEDGENT-020-conversational-chat-ui` |
 | [MEDGENT-021](MEDGENT-021-chat-form-sync-review.md) | Chat-to-form sync & save/confirmation UX | MVP | To Do | MEDGENT-019, MEDGENT-020 | `MEDGENT-021-chat-form-sync-review` |
 | [MEDGENT-022](MEDGENT-022-edit-interaction-flow.md) | Edit Interaction flow *(mandatory tool's UI)* | MVP | To Do | MEDGENT-011, MEDGENT-021 | `MEDGENT-022-edit-interaction-flow` |

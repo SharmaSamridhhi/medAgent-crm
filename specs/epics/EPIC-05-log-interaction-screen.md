@@ -15,7 +15,7 @@ manual entry would use.
 
 | Spec | Title | Status |
 |------|-------|--------|
-| [MEDGENT-019](../MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | To Do |
+| [MEDGENT-019](../MEDGENT-019-structured-form-ui.md) | Structured form panel for Log Interaction | Done |
 | [MEDGENT-020](../MEDGENT-020-conversational-chat-ui.md) | AI Assistant chat panel for Log Interaction | To Do |
 | [MEDGENT-021](../MEDGENT-021-chat-form-sync-review.md) | Chat-to-form sync & save/confirmation UX | To Do |
 | [MEDGENT-022](../MEDGENT-022-edit-interaction-flow.md) | Edit Interaction screen/flow | To Do |
