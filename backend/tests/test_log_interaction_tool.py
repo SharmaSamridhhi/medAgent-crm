@@ -128,29 +128,54 @@ def test_log_interaction_persists_and_surfaces_compliance_flags(
     assert len(body["compliance_flags"]) == 1
 
 
-def test_log_interaction_unresolvable_hcp() -> None:
+def test_log_interaction_creates_new_hcp_when_not_found() -> None:
     extraction = ExtractedFields(
         hcp_name="Dr. Nobody",
+        hcp_specialty="Cardiology",
         interaction_type="Call",
         topics_discussed="Generic follow-up",
     )
 
-    with patch(
-        "app.agent.tools.log_interaction.extract_structured",
-        return_value=extraction,
-    ):
-        with SessionLocal() as db:
-            result = log_interaction(
-                LogInteractionInput(
-                    rep_utterance="Called Dr. Nobody about something.",
-                    rep_id=DEFAULT_DEMO_REP_ID,
-                ),
-                db,
-            )
+    result = None
+    try:
+        with (
+            patch(
+                "app.agent.tools.log_interaction.extract_structured",
+                return_value=extraction,
+            ),
+            patch(
+                "app.agent.tools.log_interaction.flag_compliance_risks",
+                return_value=FlagComplianceRisksOutput(flags=[]),
+            ),
+        ):
+            with SessionLocal() as db:
+                result = log_interaction(
+                    LogInteractionInput(
+                        rep_utterance="Called Dr. Nobody about something.",
+                        rep_id=DEFAULT_DEMO_REP_ID,
+                    ),
+                    db,
+                )
 
-    assert result.status == "needs_clarification"
-    assert result.interaction_id is None
-    assert result.candidate_hcps == []
+        assert result.status == "created"
+        assert result.hcp_created is True
+        assert result.hcp_id is not None
+        assert result.interaction_id is not None
+        assert "wasn't on file" in result.message
+
+        with SessionLocal() as db:
+            created = db.get(HCP, result.hcp_id)
+            assert created is not None
+            assert created.name == "Dr. Nobody"
+            assert created.specialty == "Cardiology"
+    finally:
+        if result is not None and result.hcp_id is not None:
+            with SessionLocal() as db:
+                db.execute(
+                    delete(Interaction).where(Interaction.hcp_id == result.hcp_id)
+                )
+                db.execute(delete(HCP).where(HCP.id == result.hcp_id))
+                db.commit()
 
 
 def test_log_interaction_ambiguous_hcp(hcp_id: str) -> None:

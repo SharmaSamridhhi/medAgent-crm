@@ -106,6 +106,7 @@ export interface LogInteractionOutput {
   message: string
   interaction_id: string | null
   hcp_id: string | null
+  hcp_created: boolean
   interaction_type: string | null
   occurred_at: string | null
   attendees: string[]

@@ -46,7 +46,11 @@ _EXTRACTION_PROMPT = (
     "- outcomes: concrete agreements/results reached during the visit "
     "itself, not future intentions (those belong in suggested_follow_ups).\n"
     "- suggested_follow_ups: 1-3 short, actionable next steps implied by "
-    "the note (e.g. a promised follow-up, requested materials).\n\n"
+    "the note (e.g. a promised follow-up, requested materials).\n"
+    "- hcp_specialty, hcp_institution, hcp_contact_info: only fill these in "
+    "if the rep's note actually states the HCP's medical specialty, "
+    "institution/practice, or a contact detail — this will be true most of "
+    "the time; leave null rather than guessing.\n\n"
     "Rep's note: {utterance}"
 )
 
@@ -66,6 +70,15 @@ class HCPCandidate(BaseModel):
 class ExtractedFields(BaseModel):
     hcp_name: str | None = Field(
         default=None, description="Name of the HCP mentioned, if any"
+    )
+    hcp_specialty: str | None = Field(
+        default=None, description="The HCP's specialty, only if stated"
+    )
+    hcp_institution: str | None = Field(
+        default=None, description="The HCP's institution/practice, only if stated"
+    )
+    hcp_contact_info: str | None = Field(
+        default=None, description="The HCP's contact info, only if stated"
     )
     interaction_type: str | None = Field(
         default=None, description="e.g. Meeting, Call, Email, Conference"
@@ -87,6 +100,7 @@ class LogInteractionOutput(BaseModel):
     message: str
     interaction_id: uuid.UUID | None = None
     hcp_id: uuid.UUID | None = None
+    hcp_created: bool = False
     interaction_type: str | None = None
     occurred_at: datetime | None = None
     attendees: list[str] = []
@@ -123,29 +137,49 @@ def _resolve_hcp(
     return matches
 
 
+def _create_hcp(db: Session, extraction: ExtractedFields) -> HCP:
+    hcp = HCP(
+        name=extraction.hcp_name,
+        specialty=extraction.hcp_specialty,
+        institution=extraction.hcp_institution,
+        contact_info=extraction.hcp_contact_info,
+    )
+    db.add(hcp)
+    db.commit()
+    db.refresh(hcp)
+    return hcp
+
+
 def log_interaction(payload: LogInteractionInput, db: Session) -> LogInteractionOutput:
     extraction = _extract(payload.rep_utterance)
 
     resolved = _resolve_hcp(db, payload.hcp_id, extraction.hcp_name)
-    if resolved is None or isinstance(resolved, list):
-        candidates = resolved or []
-        if candidates:
-            message = (
-                f"I found {len(candidates)} HCPs matching "
-                f"'{extraction.hcp_name}' — which one did you mean?"
-            )
-        else:
-            who = extraction.hcp_name or "that HCP"
-            message = f"I couldn't find {who} on file — could you confirm the name?"
+    hcp_created = False
+    if isinstance(resolved, list) and len(resolved) > 1:
         return LogInteractionOutput(
             status="needs_clarification",
-            message=message,
+            message=(
+                f"I found {len(resolved)} HCPs matching "
+                f"'{extraction.hcp_name}' — which one did you mean?"
+            ),
             candidate_hcps=[
                 HCPCandidate(id=c.id, name=c.name, specialty=c.specialty)
-                for c in candidates
+                for c in resolved
             ],
         )
-    hcp = resolved
+    if isinstance(resolved, list):
+        # Zero matches by name — this is a new HCP, not on file yet. Add
+        # them so the rep doesn't have to break flow and use the separate
+        # HCP admin screen just to log a visit with someone new.
+        hcp = _create_hcp(db, extraction)
+        hcp_created = True
+    elif resolved is None:
+        return LogInteractionOutput(
+            status="needs_clarification",
+            message="I couldn't find that HCP on file — could you confirm the name?",
+        )
+    else:
+        hcp = resolved
 
     if not extraction.topics_discussed and not extraction.outcomes:
         return LogInteractionOutput(
@@ -189,7 +223,12 @@ def log_interaction(payload: LogInteractionInput, db: Session) -> LogInteraction
             interaction_id=interaction.id, payload=flag_update, db=db
         )
 
-    message = f"Logged your {kind} with {hcp.name}."
+    message = (
+        f"{hcp.name} wasn't on file, so I've added them as a new HCP. "
+        if hcp_created
+        else ""
+    )
+    message += f"Logged your {kind} with {hcp.name}."
     if flags:
         categories = ", ".join(sorted({f.category.replace("_", " ") for f in flags}))
         message += (
@@ -202,6 +241,7 @@ def log_interaction(payload: LogInteractionInput, db: Session) -> LogInteraction
         message=message,
         interaction_id=interaction.id,
         hcp_id=hcp.id,
+        hcp_created=hcp_created,
         interaction_type=create_payload.interaction_type,
         occurred_at=create_payload.occurred_at,
         attendees=create_payload.attendees,
